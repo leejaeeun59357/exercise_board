@@ -1,9 +1,17 @@
-# 🏃‍♂️운동 기록 공유 게시판 만들기🏃‍♂️
+# 🏃‍♂️운동 기록 공유 게시판🏃‍♂️
 
 오늘의 운동에 대한 기록을 작성하여 공유하는 게시판 프로젝트
 
 ## USE
-- Spring Security, Spring Boot
+- Java 17
+- Spring Boot 3.2.3
+- Spring Security
+- Spring Data Jpa
+- MySQL
+- H2 Database
+- JWT (Json Web Token)
+- SSE (Server-Sent Event)
+- OAuth 기능
 
 ## 프로젝트 기능 및 설계
 - 회원가입 기능
