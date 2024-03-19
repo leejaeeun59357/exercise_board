@@ -2,9 +2,11 @@
 
 오늘의 운동에 대한 기록을 작성하여 공유하는 게시판 프로젝트
 
-## USE
+## ⚙Setting⚙
 - Java 17
 - Spring Boot 3.2.3
+
+## USE
 - Spring Security
 - Spring Data Jpa
 - MySQL
