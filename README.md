@@ -4,9 +4,9 @@
 
 ## ⚙Setting⚙
 - Java 17
+- Project : Gradle - Groovy
 - Spring Boot 3.2.3
-- gradle 8.6
-- Intellij 
+- gradle 8.6 
 
 ## USE
 - Spring Security
