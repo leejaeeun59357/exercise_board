@@ -10,7 +10,7 @@
 - Spring Security
 - Spring Data Jpa
 - MariaDB
-- H2 Database
+- swagger
 - JWT (Json Web Token)
 - SSE (Server-Sent Event)
 - OAuth 기능
