@@ -8,7 +8,7 @@
 - Spring Boot 3.2.3
 - gradle 8.6 
 
-## USE
+## 🕹USE🕹
 - Spring Security
 - Spring Data Jpa
 - MariaDB
@@ -17,7 +17,7 @@
 - SSE (Server-Sent Event)
 - OAuth
 
-## 프로젝트 기능 및 설계
+## ✔프로젝트 기능 및 설계✔
 - 회원가입 기능
     - 모든 사용자는 회원가입을 할 수 있다. 이때 회원 가입한 모든 사용자는 USER 권한(일반 권한)을 가진다.
     - 회원가입 시 아이디, 패스워드, 이메일 을 입력받는다.
@@ -68,3 +68,5 @@
     - 로그인한 사용자만 좋아요 기능 사용 가능
     - 한 사람이 동일한 게시물을 중복하여 누를 수 없도록 아이디로 구별
  
+## 😂Trouble Shooting😂
+
