@@ -67,6 +67,10 @@
 - 게시물, 댓글 '좋아요' 추가
     - 로그인한 사용자만 좋아요 기능 사용 가능
     - 한 사람이 동일한 게시물을 중복하여 누를 수 없도록 아이디로 구별
- 
+
+## 🏛ERD🏛
+![image](https://github.com/leejaeeun59357/exercise_board/assets/149572895/a45c3712-470b-4dbe-9c5f-b6bc80e66a98)
+
+
 ## 😂Trouble Shooting😂
 
