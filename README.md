@@ -5,6 +5,8 @@
 ## ⚙Setting⚙
 - Java 17
 - Spring Boot 3.2.3
+- gradle 8.6
+- Intellij 
 
 ## USE
 - Spring Security
