@@ -9,7 +9,7 @@
 ## USE
 - Spring Security
 - Spring Data Jpa
-- MariaDB
+- MySQL
 - swagger
 - JWT (Json Web Token)
 - SSE (Server-Sent Event)
