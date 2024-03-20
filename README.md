@@ -10,10 +10,10 @@
 - Spring Security
 - Spring Data Jpa
 - MariaDB
+- Elastic Search
 - swagger
-- JWT (Json Web Token)
 - SSE (Server-Sent Event)
-- OAuth 기능
+- OAuth
 
 ## 프로젝트 기능 및 설계
 - 회원가입 기능
