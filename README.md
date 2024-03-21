@@ -71,7 +71,8 @@
 ## 🏛ERD🏛
 ![image](https://github.com/leejaeeun59357/exercise_board/assets/149572895/4598e75c-124d-4e6d-a03f-cec23b8875f8)
 
-
+## 추가 기능 구현 예정 (우선순위가 낮은 것)
+- [ ] SSE 연결이 되어 있지 않은 상태에서 event가 발생하였을 때 사용자가 추후에 이벤트에 대해 볼 수 있도록 알람 내용을 저장
 
 ## 😂Trouble Shooting😂
 
