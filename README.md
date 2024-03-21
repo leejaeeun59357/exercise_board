@@ -69,7 +69,8 @@
     - 한 사람이 동일한 게시물을 중복하여 누를 수 없도록 아이디로 구별
 
 ## 🏛ERD🏛
-![image](https://github.com/leejaeeun59357/exercise_board/assets/149572895/a45c3712-470b-4dbe-9c5f-b6bc80e66a98)
+![image](https://github.com/leejaeeun59357/exercise_board/assets/149572895/4598e75c-124d-4e6d-a03f-cec23b8875f8)
+
 
 
 ## 😂Trouble Shooting😂
