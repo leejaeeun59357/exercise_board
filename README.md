@@ -70,7 +70,8 @@
     - 한 사람이 동일한 게시물을 중복하여 누를 수 없도록 아이디로 구별
 
 ## 🏛ERD🏛
-![image](https://github.com/leejaeeun59357/exercise_board/assets/149572895/12b8fca2-98ca-420a-ba04-435357f45b32)
+![image](https://github.com/leejaeeun59357/exercise_board/assets/149572895/7811c104-628c-423d-a567-b8dc4b316380)
+
 
 
 ## 추가 기능 구현 예정 (우선순위가 낮은 것)
