@@ -28,6 +28,7 @@ public class User extends BaseEntity{
   @Column(unique = true)
   private String loginId;
 
+  @Setter
   private String password;
 
   @Column(unique = true)

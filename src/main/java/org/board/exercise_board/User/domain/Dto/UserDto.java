@@ -26,8 +26,8 @@ public class UserDto {
   public static User formToEntity(SignUpForm signUpForm) {
     return User.builder()
         .loginId(signUpForm.getLoginId())
-        .password(signUpForm.getPassword())
         .email(signUpForm.getEmail())
+        .password(signUpForm.getPassword())
         .verified_status(false)
         .role(Role.USER)
         .build();
