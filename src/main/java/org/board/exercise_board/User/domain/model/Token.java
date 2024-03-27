@@ -3,6 +3,7 @@ package org.board.exercise_board.User.domain.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -13,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.AuditOverride;
 
 @Entity
@@ -22,11 +24,13 @@ import org.hibernate.envers.AuditOverride;
 @AllArgsConstructor
 @AuditOverride(forClass = BaseEntity.class)
 public class Token extends BaseEntity{
+
   @Id
-  private Long id;
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+  private String id;
 
   @OneToOne(fetch = FetchType.EAGER)
-  @MapsId
   @JoinColumn(name = "user_id")
   @Setter
   private User user;
