@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class TokenService {
 
   private final TokenRepository tokenRepository;
-  private final EmailSendService emailSendService;
 
   // 만료 시간은 5분으로 설정
   private final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L;

@@ -30,8 +30,13 @@ public class SignUpApplication {
       throw new CustomException(ErrorCode.ALREATY_REGISTERD_EMAIL);
     }
 
+    // signupform을 통해 입력받은 user 정보 저장
     User user = userService.save(signUpForm);
+
+    // user 정보를 사용하여 token 생성
     Token token = tokenService.createToken(user);
+
+    // 생성된 token 정보를 인증 링크에 포함시켜 전송
     emailSendService.sendEmail(signUpForm.getEmail(), token);
 
     return UserDto.entityToDto(user);
