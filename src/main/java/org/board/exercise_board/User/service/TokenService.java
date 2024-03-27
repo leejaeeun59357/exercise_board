@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.User.domain.model.Token;
 import org.board.exercise_board.User.domain.model.User;
 import org.board.exercise_board.User.domain.repository.TokenRepository;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,5 +25,6 @@ public class TokenService {
   }
 
 
+  // 토큰 유효시간 확인 필요
 
 }

@@ -8,6 +8,7 @@ import org.board.exercise_board.User.domain.model.Token;
 import org.board.exercise_board.User.domain.model.User;
 import org.board.exercise_board.User.exception.CustomException;
 import org.board.exercise_board.User.exception.ErrorCode;
+import org.board.exercise_board.User.service.EmailSendService;
 import org.board.exercise_board.User.service.TokenService;
 import org.board.exercise_board.User.service.UserService;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class SignUpApplication {
   private final UserService userService;
   private final TokenService tokenService;
+  private final EmailSendService emailSendService;
 
   public UserDto signup(SignUpForm signUpForm) {
     if(userService.isExistLoginId(signUpForm.getLoginId())) {
@@ -30,6 +32,7 @@ public class SignUpApplication {
 
     User user = userService.save(signUpForm);
     Token token = tokenService.createToken(user);
+    emailSendService.sendEmail(signUpForm.getEmail(), token);
 
     return UserDto.entityToDto(user);
   }
