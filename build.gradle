@@ -24,6 +24,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+    // mail 전송을 위한 dependency 추가
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     //spring Data 의존성
     implementation 'org.springframework.data:spring-data-envers'
 
