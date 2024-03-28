@@ -31,8 +31,13 @@ public class SecurityConfig {
         //홈,로그인,회원가입 페이지는 로그인 없이 접근 가능
         .authorizeHttpRequests(
             (request) -> request
+<<<<<<< HEAD
                 .requestMatchers("/","/user/signup","/user/login").permitAll()
                 .anyRequest().authenticated()
+=======
+                    .requestMatchers("/","/user/signup","/user/login").permitAll()
+                    .anyRequest().authenticated()
+>>>>>>> origin/feature/User
         )
 
 
