@@ -8,7 +8,7 @@ import org.board.exercise_board.User.domain.model.Token;
 import org.board.exercise_board.User.domain.model.User;
 import org.board.exercise_board.User.exception.CustomException;
 import org.board.exercise_board.User.exception.ErrorCode;
-import org.board.exercise_board.User.service.EmailSendService;
+import org.board.exercise_board.User.service.EmailService;
 import org.board.exercise_board.User.service.TokenService;
 import org.board.exercise_board.User.service.UserService;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class SignUpApplication {
   private final UserService userService;
   private final TokenService tokenService;
-  private final EmailSendService emailSendService;
+  private final EmailService emailService;
 
   public UserDto signup(SignUpForm signUpForm) {
     if(userService.isExistLoginId(signUpForm.getLoginId())) {
@@ -37,7 +37,7 @@ public class SignUpApplication {
     Token token = tokenService.createToken(user);
 
     // 생성된 token 정보를 인증 링크에 포함시켜 전송
-    emailSendService.sendEmail(signUpForm.getEmail(), token);
+    emailService.sendEmail(signUpForm.getEmail(), token);
 
     return UserDto.entityToDto(user);
   }
