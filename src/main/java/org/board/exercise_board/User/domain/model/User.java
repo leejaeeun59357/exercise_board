@@ -37,7 +37,7 @@ public class User extends BaseEntity {
   @Column(unique = true)
   private String email;
 
-  @Enumerated(EnumType.STRING)
+//  @Enumerated(EnumType.STRING)
   private Role role;
 
   // 이메일 인증이 완료되면 true로 변경하기 위해 @Setter 사용

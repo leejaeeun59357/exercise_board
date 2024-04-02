@@ -22,6 +22,16 @@ public class SignUpApplication {
   private final EmailService emailService;
 
   public UserDto signup(SignUpForm signUpForm) {
+    if (signUpForm.getEmail() == null) {
+      throw new CustomException(ErrorCode.EMAIL_IS_NULL);
+    }
+    if (signUpForm.getLoginId() == null) {
+      throw new CustomException(ErrorCode.LOGIN_ID_IS_NULL);
+    }
+    if (signUpForm.getPassword() == null) {
+      throw new CustomException(ErrorCode.PASSWORD_IS_NULL);
+    }
+
     if(userService.isExistLoginId(signUpForm.getLoginId())) {
       throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
     }

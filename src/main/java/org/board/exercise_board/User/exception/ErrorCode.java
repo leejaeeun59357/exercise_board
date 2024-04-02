@@ -11,6 +11,9 @@ public enum ErrorCode {
   // 회원가입 관련
   ALREADY_REGISTERD_ID(HttpStatus.BAD_REQUEST, "이미 등록된 ID입니다."),
   ALREATY_REGISTERD_EMAIL(HttpStatus.BAD_REQUEST, "이미 등록된 Email입니다."),
+  EMAIL_IS_NULL(HttpStatus.BAD_REQUEST, "Email은 필수 입력 항목입니다."),
+  LOGIN_ID_IS_NULL(HttpStatus.BAD_REQUEST, "ID는 필수 입력 항목입니다."),
+  PASSWORD_IS_NULL(HttpStatus.BAD_REQUEST, "비밀번호는 필수 입력 항목입니다."),
 
   // 인증 관련
   NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "해당 사용자를 찾을 수 없습니다."),
