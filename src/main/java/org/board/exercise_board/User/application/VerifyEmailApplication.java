@@ -29,7 +29,6 @@ public class VerifyEmailApplication {
 
     // 만료 시간이 지났다면 Exception 발생
     if(tokenService.verifyExpirationDate(token)) {
-      token.getUser().setVerifiedStatus(true);
       tokenService.updateVerifyStatus(token);
     } else {
       throw new CustomException(ErrorCode.EXPIRATION_TIME_IS_OVER);

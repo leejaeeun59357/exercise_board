@@ -4,6 +4,8 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.board.exercise_board.User.domain.model.Token;
+import org.board.exercise_board.User.exception.CustomException;
+import org.board.exercise_board.User.exception.ErrorCode;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,7 @@ public class EmailService {
       javaMailSender.send(message);
 
     } catch (Exception e) {
-      log.info(e.toString());
+      throw new CustomException(ErrorCode.MAIL_SEND_FAIL);
     }
   }
 }

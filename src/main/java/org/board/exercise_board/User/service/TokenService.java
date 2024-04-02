@@ -18,8 +18,14 @@ public class TokenService {
   private final long EMAIL_TOKNE_EXPIRATION_MINUTE_TIME_VALUE = 5L;
 
   public Token createToken(User user) {
-    Token token = new Token();
-    token.setUser(user);
+
+    Token token;
+    if (tokenRepository.existsByUser(user)) {
+      token = tokenRepository.findByUser(user);
+    } else {
+      token = new Token();
+      token.setUser(user);
+    }
     token.setExpirationDateTime(LocalDateTime.now().plusMinutes(
         EMAIL_TOKNE_EXPIRATION_MINUTE_TIME_VALUE));
     return tokenRepository.save(token);
@@ -32,6 +38,7 @@ public class TokenService {
 
   /**
    * 현재 시간이 만료시간을 지났는지 검사
+   *
    * @param token
    * @return
    */
@@ -42,9 +49,11 @@ public class TokenService {
 
   /**
    * 인증링크를 통해 사용자 인증이 되면 user의 verified_Status를 true로 변경
+   *
    * @param token
    */
   public void updateVerifyStatus(Token token) {
+    token.getUser().setVerifiedStatus(true);
     tokenRepository.save(token);
   }
 
