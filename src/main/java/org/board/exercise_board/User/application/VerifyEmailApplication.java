@@ -23,13 +23,13 @@ public class VerifyEmailApplication {
         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
     // 이미 인증완료되었다면 Exception 발생
-    if(token.getUser().getVerified_status()) {
+    if(token.getUser().getVerifiedStatus()) {
       throw new CustomException(ErrorCode.ALREADY_VERIFIED);
     }
 
     // 만료 시간이 지났다면 Exception 발생
     if(tokenService.verifyExpirationDate(token)) {
-      token.getUser().setVerified_status(true);
+      token.getUser().setVerifiedStatus(true);
       tokenService.updateVerifyStatus(token);
     } else {
       throw new CustomException(ErrorCode.EXPIRATION_TIME_IS_OVER);

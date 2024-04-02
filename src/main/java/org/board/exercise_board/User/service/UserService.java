@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
   private final UserRepository userRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
@@ -26,15 +27,17 @@ public class UserService {
 
   /**
    * 이미 등록된 email 인지 검사
+   *
    * @param email
    * @return true/false
    */
   public boolean isExistEmail(String email) {
-    return userRepository.findByEmail(email).isPresent();
+    return userRepository.existsByEmail(email);
   }
 
   /**
    * 이미 등록된 ID 인지 검사
+   *
    * @param loginId
    * @return true/false
    */
@@ -44,21 +47,24 @@ public class UserService {
 
   /**
    * 입력받은 form 정보를 pw는 encoding 하여 db에 저장
+   *
    * @param signUpForm
    * @return
    */
   public User save(SignUpForm signUpForm) {
-    User user = UserDto.formToEntity(signUpForm);
+    User user = User.formToEntity(signUpForm);
     user.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
     return userRepository.save(user);
   }
 
   public JwtToken signin(String loginId, String password) {
     // 1. token 생성
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginId, password);
+    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+        loginId, password);
 
     // 2. 해당 token을 이용하여 인증 절차 거친다.
-    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+    Authentication authentication = authenticationManagerBuilder.getObject()
+        .authenticate(authenticationToken);
 
     // 3. 인증 절차 통과하면 인증이 완료되었다는 뜻
     // 따라서 token을 발행한다.

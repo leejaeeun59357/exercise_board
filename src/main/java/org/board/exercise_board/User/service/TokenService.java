@@ -15,12 +15,13 @@ public class TokenService {
   private final TokenRepository tokenRepository;
 
   // 만료 시간은 5분으로 설정
-  private final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L;
+  private final long EMAIL_TOKNE_EXPIRATION_MINUTE_TIME_VALUE = 5L;
 
   public Token createToken(User user) {
     Token token = new Token();
     token.setUser(user);
-    token.setExpirationDate(LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE));
+    token.setExpirationDateTime(LocalDateTime.now().plusMinutes(
+        EMAIL_TOKNE_EXPIRATION_MINUTE_TIME_VALUE));
     return tokenRepository.save(token);
   }
 
@@ -36,12 +37,7 @@ public class TokenService {
    */
   public boolean verifyExpirationDate(Token token) {
     // 현재 시간이 만료시간을 지나지 않았을 때 true
-    if(LocalDateTime.now().isBefore(token.getExpirationDate()) ||
-    LocalDateTime.now().isEqual(token.getExpirationDate())) {
-      return true;
-    } else {
-      return false;
-    }
+    return !LocalDateTime.now().isAfter(token.getExpirationDateTime());
   }
 
   /**
