@@ -13,7 +13,9 @@ public enum PostErrorCode {
   SUBJECT_IS_EMPTY(HttpStatus.BAD_REQUEST, "제목은 필수 입력 항목입니다."),
   CONTENT_IS_EMPTY(HttpStatus.BAD_REQUEST, "내용은 필수 입력 항목입니다."),
 
-  NOT_VERIFIED_EMAIL(HttpStatus.BAD_REQUEST,"이메일 인증이 되지 않았습니다.");
+  NOT_VERIFIED_EMAIL(HttpStatus.BAD_REQUEST,"이메일 인증이 되지 않았습니다."),
+
+  POST_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "해당 게시물이 존재하지 않습니다");
 
 
   private final HttpStatus httpStatus;

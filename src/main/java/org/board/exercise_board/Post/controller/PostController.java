@@ -1,15 +1,18 @@
 package org.board.exercise_board.Post.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.Post.application.RemoveApplication;
 import org.board.exercise_board.Post.application.WriteApplication;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
 import org.board.exercise_board.Post.domain.form.WriteForm;
 import org.board.exercise_board.User.Security.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
   private final WriteApplication writeApplication;
+  private final RemoveApplication removeApplication;
 
   /**
    * 게시글 작성하는 Controller
@@ -33,5 +37,13 @@ public class PostController {
 
     return ResponseEntity.ok(
         writeApplication.writePost(writeForm, customUserDetails.getUsername()));
+  }
+
+  @DeleteMapping("/remove")
+  public String deletePost(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @RequestParam String subject
+  ) {
+    return removeApplication.removePost(customUserDetails.getUsername(), subject);
   }
 }
