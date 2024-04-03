@@ -14,6 +14,13 @@ public class WriteApplication {
 
   private final WriteService writeService;
 
+  /**
+   * 제목과 내용이 null값으로 들어왔는지, 작성하고자 하는 사용자가 이메일 인증이 완료되었는지 검사 후 게시글 저장
+   *
+   * @param writeForm
+   * @param writerId
+   * @return
+   */
   public PostDto writePost(WriteForm writeForm, String writerId) {
 
     // 제목이나 내용이 null값인지 검사
@@ -30,6 +37,6 @@ public class WriteApplication {
       throw new PostCustomException(PostErrorCode.NOT_VERIFIED_EMAIL);
     }
 
-    return writeService.savePost(writeForm,writerId);
+    return writeService.savePost(writeForm, writerId);
   }
 }

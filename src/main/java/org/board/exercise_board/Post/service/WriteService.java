@@ -18,6 +18,13 @@ public class WriteService {
   private final PostRepository postRepository;
   private final UserRepository userRepository;
 
+  /**
+   * 해당 사용자 정보와 입력 받은 Post 제목, 내용을 함께 DB에 저장
+   *
+   * @param writeForm
+   * @param writerId
+   * @return
+   */
   public PostDto savePost(WriteForm writeForm, String writerId) {
     User user = userRepository.findByLoginId(writerId)
         .orElseThrow(() -> new PostCustomException(PostErrorCode.NOT_FOUND_USER));
