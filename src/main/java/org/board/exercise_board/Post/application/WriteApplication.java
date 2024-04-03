@@ -22,7 +22,7 @@ public class WriteApplication {
     }
 
     if (writeForm.getContent() == null || writeForm.getContent().isEmpty()) {
-      throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
+      throw new PostCustomException(PostErrorCode.CONTENT_IS_EMPTY);
     }
 
     // 이메일 인증이 완료되었는지 검사
