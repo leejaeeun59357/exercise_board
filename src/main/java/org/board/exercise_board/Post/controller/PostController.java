@@ -47,6 +47,12 @@ public class PostController {
         writeApplication.writePost(writeForm, customUserDetails.getUsername()));
   }
 
+  /**
+   * 해당 사용자와 제목이 일치하는 게시글 삭제
+   * @param customUserDetails
+   * @param subject
+   * @return
+   */
   @DeleteMapping("/remove")
   public String deletePost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -55,6 +61,11 @@ public class PostController {
     return removeApplication.removePost(customUserDetails.getUsername(), subject);
   }
 
+  /**
+   * 전체 게시물을 10개씩 조회
+   * @param pageable
+   * @return
+   */
   @GetMapping("/read")
   public ResponseEntity<Page<Post>> readAllPost(
       @PageableDefault(size = 10, sort="createdDate", direction = Direction.DESC) Pageable pageable
