@@ -9,7 +9,10 @@ import org.board.exercise_board.Post.exception.PostCustomException;
 import org.board.exercise_board.Post.exception.PostErrorCode;
 import org.board.exercise_board.User.domain.model.User;
 import org.board.exercise_board.User.domain.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +52,7 @@ public class PostService {
    * 사용자의 ID와 제목으로 해당하는 게시물 중 첫번째 게시물 찾기
    *
    * @param writerId 작성자 ID
-   * @param subject 게시물 제목
+   * @param subject  게시물 제목
    * @return
    */
   public Post findPosts(String writerId, String subject) {
@@ -72,6 +75,7 @@ public class PostService {
 
   /**
    * ID로 해당 사용자 찾는 메서드
+   *
    * @param writerId
    * @return
    */
@@ -80,5 +84,15 @@ public class PostService {
         .orElseThrow(() -> new PostCustomException(PostErrorCode.NOT_FOUND_USER));
 
     return user;
+  }
+
+  /**
+   * 최근 날짜 순으로 모든 게시물 조회(Entity -> DTO)
+   *
+   * @return
+   */
+  @Transactional(readOnly = true)
+  public Page<Post> readAllPosts(Pageable pageable) {
+    return postRepository.findAll(pageable);
   }
 }
