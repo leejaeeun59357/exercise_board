@@ -7,6 +7,7 @@ import org.board.exercise_board.Post.exception.PostCustomException;
 import org.board.exercise_board.Post.exception.PostErrorCode;
 import org.board.exercise_board.Post.service.PostService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class WriteApplication {
    * @param writerId
    * @return
    */
+  @Transactional
   public PostDto writePost(WriteForm writeForm, String writerId) {
 
     // 제목이나 내용이 null값인지 검사
