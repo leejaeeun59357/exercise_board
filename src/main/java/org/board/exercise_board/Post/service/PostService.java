@@ -2,6 +2,7 @@ package org.board.exercise_board.Post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
+import org.board.exercise_board.Post.domain.form.ModifyForm;
 import org.board.exercise_board.Post.domain.form.WriteForm;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.Post.domain.repository.PostRepository;
@@ -94,5 +95,11 @@ public class PostService {
   @Transactional(readOnly = true)
   public Page<Post> readAllPosts(Pageable pageable) {
     return postRepository.findAll(pageable);
+  }
+
+  public PostDto modifyPost(Post post, ModifyForm modifyForm) {
+    post.setSubject(modifyForm.getAfterSubject());
+    post.setContent(modifyForm.getContent());
+    return PostDto.entityToDto(postRepository.save(post));
   }
 }

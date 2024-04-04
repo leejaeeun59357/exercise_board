@@ -30,10 +30,12 @@ public class Post extends PostBaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Setter
   private String subject;
 
   @Type(JsonType.class)
   @Column(name = "CONTENT", columnDefinition = "longtext")
+  @Setter
   private Map<String, Object> content;
 
   @ManyToOne
