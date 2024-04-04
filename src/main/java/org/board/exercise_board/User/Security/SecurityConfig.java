@@ -50,10 +50,6 @@ public class SecurityConfig {
 
 
         .formLogin(
-//            (form) -> form
-//                .loginPage("/user/login")
-//                .defaultSuccessUrl("/", true)
-//                .permitAll()
             AbstractHttpConfigurer::disable
         )
 
