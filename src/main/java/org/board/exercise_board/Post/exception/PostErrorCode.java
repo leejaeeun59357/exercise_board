@@ -15,7 +15,9 @@ public enum PostErrorCode {
 
   NOT_VERIFIED_EMAIL(HttpStatus.BAD_REQUEST,"이메일 인증이 되지 않았습니다."),
 
-  POST_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "해당 게시물이 존재하지 않습니다");
+  POST_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "해당 게시물이 존재하지 않습니다"),
+
+  KEYWORD_IS_EMPTY(HttpStatus.BAD_REQUEST,"검색 키워드를 입력하세요.");
 
 
   private final HttpStatus httpStatus;

@@ -1,5 +1,7 @@
 package org.board.exercise_board.Post.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
 import org.board.exercise_board.Post.domain.form.ModifyForm;
@@ -101,5 +103,23 @@ public class PostService {
     post.setSubject(modifyForm.getAfterSubject());
     post.setContent(modifyForm.getContent());
     return PostDto.entityToDto(postRepository.save(post));
+  }
+
+  /**
+   * 해당 키워드를 포함하고 있는 게시글 조회
+   *
+   * @param keyword
+   * @return
+   */
+  @Transactional
+  public List<PostDto> searchPost(String keyword, Pageable pageable) {
+    Page<Post> postLists = postRepository.findBySubjectContaining(keyword, pageable);
+
+    List<PostDto> postDtos = new ArrayList<>();
+    for (Post post : postLists) {
+      postDtos.add(PostDto.entityToDto(post));
+    }
+
+    return postDtos;
   }
 }

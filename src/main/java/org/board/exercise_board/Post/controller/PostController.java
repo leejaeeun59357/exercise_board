@@ -1,9 +1,11 @@
 package org.board.exercise_board.Post.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Post.application.ModifyApplication;
 import org.board.exercise_board.Post.application.ReadApplication;
 import org.board.exercise_board.Post.application.RemoveApplication;
+import org.board.exercise_board.Post.application.SearchApplication;
 import org.board.exercise_board.Post.application.WriteApplication;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
 import org.board.exercise_board.Post.domain.form.ModifyForm;
@@ -34,6 +36,7 @@ public class PostController {
   private final RemoveApplication removeApplication;
   private final ReadApplication readApplication;
   private final ModifyApplication modifyApplication;
+  private final SearchApplication searchApplication;
 
   /**
    * 게시글 작성하는 Controller
@@ -85,5 +88,13 @@ public class PostController {
       @RequestBody ModifyForm modifyForm
   ) {
     return ResponseEntity.ok(modifyApplication.modifyPost(modifyForm, customUserDetails.getUsername()));
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<PostDto>> searchPost(
+      @RequestParam String keyword,
+      @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
+  ) {
+    return ResponseEntity.ok(searchApplication.searchPost(keyword,pageable));
   }
 }
