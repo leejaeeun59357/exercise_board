@@ -82,19 +82,34 @@ public class PostController {
     return ResponseEntity.ok(readApplication.readAllPosts(pageable));
   }
 
+  /**
+   * 작성자확인 후 작성자만 게시글 수정할 수 있도록 함
+   *
+   * @param customUserDetails
+   * @param modifyForm
+   * @return
+   */
   @PutMapping("/modify")
   public ResponseEntity<PostDto> modifyPost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestBody ModifyForm modifyForm
   ) {
-    return ResponseEntity.ok(modifyApplication.modifyPost(modifyForm, customUserDetails.getUsername()));
+    return ResponseEntity.ok(
+        modifyApplication.modifyPost(modifyForm, customUserDetails.getUsername()));
   }
 
+  /**
+   * 키워드를 포함한 제목이 있는 게시글 조회, 별도의 인증이 필요하지 않음
+   *
+   * @param keyword
+   * @param pageable
+   * @return
+   */
   @GetMapping("/search")
   public ResponseEntity<List<PostDto>> searchPost(
       @RequestParam String keyword,
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
-    return ResponseEntity.ok(searchApplication.searchPost(keyword,pageable));
+    return ResponseEntity.ok(searchApplication.searchPost(keyword, pageable));
   }
 }
