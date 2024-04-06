@@ -12,6 +12,7 @@ import org.board.exercise_board.User.service.EmailService;
 import org.board.exercise_board.User.service.TokenService;
 import org.board.exercise_board.User.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -22,13 +23,13 @@ public class SignUpApplication {
   private final EmailService emailService;
 
   public UserDto signup(SignUpForm signUpForm) {
-    if (signUpForm.getEmail() == null) {
+    if (signUpForm.getEmail() == null || ObjectUtils.isEmpty(signUpForm.getEmail())) {
       throw new CustomException(ErrorCode.EMAIL_IS_NULL);
     }
-    if (signUpForm.getLoginId() == null) {
+    if (signUpForm.getLoginId() == null || ObjectUtils.isEmpty(signUpForm.getLoginId())) {
       throw new CustomException(ErrorCode.LOGIN_ID_IS_NULL);
     }
-    if (signUpForm.getPassword() == null) {
+    if (signUpForm.getPassword() == null || ObjectUtils.isEmpty(signUpForm.getPassword())) {
       throw new CustomException(ErrorCode.PASSWORD_IS_NULL);
     }
 
