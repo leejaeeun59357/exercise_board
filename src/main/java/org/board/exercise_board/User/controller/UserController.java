@@ -1,5 +1,6 @@
 package org.board.exercise_board.User.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.User.application.SignInApplication;
 import org.board.exercise_board.User.application.SignUpApplication;
@@ -47,7 +48,7 @@ public class UserController {
    * @return
    */
   @PostMapping("/signin")
-  public ResponseEntity<JwtToken> signin(@RequestBody SignInForm signInForm) {
+  public ResponseEntity<JwtToken> signin(@Valid @RequestBody SignInForm signInForm) {
     return ResponseEntity.ok(signInApplication.signin(signInForm));
   }
 }
