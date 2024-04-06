@@ -42,28 +42,15 @@ public class PostService {
 
 
 
-  /**
-   * 사용자의 ID와 제목으로 해당하는 게시물 중 첫번째 게시물 찾기
-   *
-   * @param writerId 작성자 ID
-   * @param subject  게시물 제목
-   * @return
-   */
-  public Post findPosts(String writerId, String subject) {
-    User user = userService.findUser(writerId);
 
-    // 해당 게시물이 존재하지 않는다면 에러 발생
-    if (postRepository.findAllBySubjectAndUser(subject, user).isEmpty()) {
-      throw new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST);
-    }
-
-    Post post = postRepository.findAllBySubjectAndUser(subject, user).get(0);
-
-    return post;
+  public Post findPost(Long postId) {
+    return postRepository.findById(postId)
+        .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
   }
 
-  public void removePost(Post post) {
+  public String removePost(Post post) {
     postRepository.delete(post);
+    return "게시물 삭제가 완료되었습니다.";
   }
 
 
@@ -78,6 +65,13 @@ public class PostService {
     return postRepository.findAll(pageable);
   }
 
+
+  /**
+   * 입력받은 form대로 게시글 수정
+   * @param post
+   * @param modifyForm
+   * @return
+   */
   public PostDto modifyPost(Post post, ModifyForm modifyForm) {
     post.setSubject(modifyForm.getAfterSubject());
     post.setContent(modifyForm.getContent());
@@ -94,7 +88,7 @@ public class PostService {
   public List<PostDto> searchPost(String keyword, Pageable pageable) {
 
     return postRepository.findBySubjectContaining(keyword,pageable)
-        .stream().map(it-> PostDto.entityToDto(it))
+        .stream().map(PostDto::entityToDto)
         .collect(Collectors.toList());
   }
 }

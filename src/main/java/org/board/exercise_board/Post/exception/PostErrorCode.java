@@ -17,6 +17,8 @@ public enum PostErrorCode {
 
   POST_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "해당 게시물이 존재하지 않습니다"),
 
+  NOT_HAVE_RIGHT(HttpStatus.BAD_REQUEST, "게시글 권한이 없습니다"),
+
   KEYWORD_IS_EMPTY(HttpStatus.BAD_REQUEST,"검색 키워드를 입력하세요.");
 
 

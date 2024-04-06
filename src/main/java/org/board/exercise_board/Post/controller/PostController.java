@@ -58,15 +58,15 @@ public class PostController {
    * 해당 사용자와 제목이 일치하는 게시글 삭제
    *
    * @param customUserDetails
-   * @param subject
+   * @param postId
    * @return
    */
   @DeleteMapping("/remove")
   public String deletePost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      @RequestParam String subject
+      @RequestParam Long postId
   ) {
-    return removeApplication.removePost(customUserDetails.getUsername(), subject);
+    return removeApplication.removePost(customUserDetails.getUsername(), postId);
   }
 
   /**
