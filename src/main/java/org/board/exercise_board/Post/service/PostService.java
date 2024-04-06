@@ -48,7 +48,7 @@ public class PostService {
         .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
   }
 
-  public String removePost(Post post) {
+  public String deletePost(Post post) {
     postRepository.delete(post);
     return "게시물 삭제가 완료되었습니다.";
   }

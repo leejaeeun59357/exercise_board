@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RemoveApplication {
+public class DeleteApplication {
 
   private final PostService postService;
 
-  public String removePost(String writerId, Long postId) {
+  public String deletePost(String writerId, Long postId) {
     Post post = postService.findPost(postId);
 
     // 로그인한 사용자가 작성자인지 확인
@@ -22,7 +22,7 @@ public class RemoveApplication {
       throw new PostCustomException(PostErrorCode.NOT_HAVE_RIGHT);
     }
 
-    return postService.removePost(post);
+    return postService.deletePost(post);
   }
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Post.application.ModifyApplication;
 import org.board.exercise_board.Post.application.ReadApplication;
-import org.board.exercise_board.Post.application.RemoveApplication;
+import org.board.exercise_board.Post.application.DeleteApplication;
 import org.board.exercise_board.Post.application.SearchApplication;
 import org.board.exercise_board.Post.application.WriteApplication;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
   private final WriteApplication writeApplication;
-  private final RemoveApplication removeApplication;
+  private final DeleteApplication deleteApplication;
   private final ReadApplication readApplication;
   private final ModifyApplication modifyApplication;
   private final SearchApplication searchApplication;
@@ -61,12 +61,12 @@ public class PostController {
    * @param postId
    * @return
    */
-  @DeleteMapping("/remove")
+  @DeleteMapping("/delete")
   public String deletePost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @RequestParam Long postId
   ) {
-    return removeApplication.removePost(customUserDetails.getUsername(), postId);
+    return deleteApplication.deletePost(customUserDetails.getUsername(), postId);
   }
 
   /**
