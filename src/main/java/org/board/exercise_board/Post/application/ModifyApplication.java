@@ -8,6 +8,7 @@ import org.board.exercise_board.Post.exception.PostCustomException;
 import org.board.exercise_board.Post.exception.PostErrorCode;
 import org.board.exercise_board.Post.service.PostService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class ModifyApplication {
     }
 
     // 변경 후 제목 null 일 때,
-    if (modifyForm.getAfterSubject() == null || modifyForm.getAfterSubject().isEmpty()) {
+    if (ObjectUtils.isEmpty(modifyForm.getAfterSubject())) {
       throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
     }
 

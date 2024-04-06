@@ -6,6 +6,7 @@ import org.board.exercise_board.Post.domain.form.WriteForm;
 import org.board.exercise_board.Post.exception.PostCustomException;
 import org.board.exercise_board.Post.exception.PostErrorCode;
 import org.board.exercise_board.Post.service.PostService;
+import org.board.exercise_board.User.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WriteApplication {
 
   private final PostService postService;
+  private final UserService userService;
 
   /**
    * 제목과 내용이 null값으로 들어왔는지, 작성하고자 하는 사용자가 이메일 인증이 완료되었는지 검사 후 게시글 저장
@@ -35,7 +37,7 @@ public class WriteApplication {
     }
 
     // 이메일 인증이 완료되었는지 검사
-    if (!postService.isEmailVerified(writerId)) {
+    if (!userService.isEmailVerified(writerId)) {
       throw new PostCustomException(PostErrorCode.NOT_VERIFIED_EMAIL);
     }
 
