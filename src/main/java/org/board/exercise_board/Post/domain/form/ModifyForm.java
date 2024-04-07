@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModifyForm {
-  private Long postId;
   private String afterSubject;
   private Map<String, Object> content;
 }

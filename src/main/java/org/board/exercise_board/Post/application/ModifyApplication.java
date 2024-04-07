@@ -17,7 +17,7 @@ public class ModifyApplication {
 
   private final PostService postService;
 
-  public PostDto modifyPost(ModifyForm modifyForm, String writerId) {
+  public PostDto modifyPost(Long postId,ModifyForm modifyForm, String writerId) {
 
     // 변경 후 제목 null 일 때,
     if (ObjectUtils.isEmpty(modifyForm.getAfterSubject())) {
@@ -30,7 +30,7 @@ public class ModifyApplication {
     }
 
     // 해당 제목의 게시물 찾기
-    Post post = postService.findPost(modifyForm.getPostId());
+    Post post = postService.findPost(postId);
 
     // 수정하려는 사람과 작성자가 동일 인물인지 확인
     if(!Objects.equals(writerId, post.getUser().getLoginId())) {

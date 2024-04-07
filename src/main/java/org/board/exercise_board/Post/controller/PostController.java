@@ -92,10 +92,11 @@ public class PostController {
   @PutMapping("/modify")
   public ResponseEntity<PostDto> modifyPost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @RequestParam Long postId,
       @RequestBody ModifyForm modifyForm
   ) {
     return ResponseEntity.ok(
-        modifyApplication.modifyPost(modifyForm, customUserDetails.getUsername()));
+        modifyApplication.modifyPost(postId,modifyForm, customUserDetails.getUsername()));
   }
 
   /**
