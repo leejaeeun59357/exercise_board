@@ -12,6 +12,7 @@ import org.board.exercise_board.User.service.EmailService;
 import org.board.exercise_board.User.service.TokenService;
 import org.board.exercise_board.User.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class SignUpApplication {
   private final EmailService emailService;
 
   public UserDto signup(SignUpForm signUpForm) {
+
     if(userService.isExistLoginId(signUpForm.getLoginId())) {
       throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
     }

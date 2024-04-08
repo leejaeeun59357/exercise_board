@@ -44,16 +44,12 @@ public class SecurityConfig {
         //홈,로그인,회원가입 페이지는 로그인 없이 접근 가능
         .authorizeHttpRequests(
             (request) -> request
-                .requestMatchers("/","/user/**").permitAll()
+                .requestMatchers("/post/read","/user/**","/post/search").permitAll()
                 .anyRequest().authenticated()
         )
 
 
         .formLogin(
-//            (form) -> form
-//                .loginPage("/user/login")
-//                .defaultSuccessUrl("/", true)
-//                .permitAll()
             AbstractHttpConfigurer::disable
         )
 

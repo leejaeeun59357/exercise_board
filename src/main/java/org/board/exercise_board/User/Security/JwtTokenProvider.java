@@ -38,8 +38,11 @@ public class JwtTokenProvider {
   // 유효시간 = 7일
   private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
   private final Key key;
+  private final CustomUserDetailsService customUserDetailsService;
 
-  public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey) {
+  public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey,
+      CustomUserDetailsService customUserDetailsService) {
+    this.customUserDetailsService = customUserDetailsService;
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
@@ -100,8 +103,8 @@ public class JwtTokenProvider {
             .collect(Collectors.toList());
 
     // UserDetails 객체 생성해서 Authentication 리턴
-    UserDetails principal = new User(claims.getSubject(), "", authorities);
-    return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
+    return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
   }
 
 
