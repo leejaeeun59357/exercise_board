@@ -27,7 +27,7 @@ public class UserController {
   private final SignInApplication signInApplication;
 
   @PostMapping("/signup")
-  public ResponseEntity<UserDto> signup(@RequestBody SignUpForm signUpForm) {
+  public ResponseEntity<UserDto> signup(@Valid @RequestBody SignUpForm signUpForm) {
     return ResponseEntity.ok(signUpApplication.signup(signUpForm));
   }
 
