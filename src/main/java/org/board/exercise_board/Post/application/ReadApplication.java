@@ -1,6 +1,7 @@
 package org.board.exercise_board.Post.application;
 
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.Post.domain.Dto.PostDto;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.Post.service.PostService;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,12 @@ public class ReadApplication {
     Page<Post> posts = postService.readAllPosts(pageable);
 
     return posts;
+  }
+
+  public PostDto readOnePost(Long postId) {
+    Post post = postService.findPost(postId);
+
+    return PostDto.entityToDto(post);
   }
 
 }

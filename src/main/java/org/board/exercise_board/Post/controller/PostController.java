@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,6 +81,13 @@ public class PostController {
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
     return ResponseEntity.ok(readApplication.readAllPosts(pageable));
+  }
+
+  @GetMapping("/read/{postId}")
+  public ResponseEntity<PostDto> readOnePost(
+      @PathVariable(value = "postId") Long postId
+  ) {
+    return ResponseEntity.ok(readApplication.readOnePost(postId));
   }
 
   /**
