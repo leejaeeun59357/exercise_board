@@ -1,7 +1,10 @@
 package org.board.exercise_board.Post.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.board.exercise_board.Post.domain.Dto.PostDto;
+import org.board.exercise_board.Comment.domain.dto.CommentDto;
+import org.board.exercise_board.Comment.service.CommentService;
+import org.board.exercise_board.Post.domain.Dto.PostOneDto;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.Post.service.PostService;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReadApplication {
 
   private final PostService postService;
+  private final CommentService commentService;
 
   @Transactional(readOnly = true)
   public Page<Post> readAllPosts(Pageable pageable) {
@@ -22,10 +26,18 @@ public class ReadApplication {
     return posts;
   }
 
-  public PostDto readOnePost(Long postId) {
+  /**
+   * 게시글과 해당 게시글에 작성된 댓글 리스트를 가진 PostOneDto 객체 반환
+   *
+   * @param postId
+   * @return
+   */
+  public PostOneDto readOnePost(Long postId) {
     Post post = postService.findPost(postId);
 
-    return PostDto.entityToDto(post);
+    List<CommentDto> comments = commentService.findComments(post);
+
+    return PostOneDto.entityToDto(post, comments);
   }
 
 }

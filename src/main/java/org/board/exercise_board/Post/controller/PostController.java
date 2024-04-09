@@ -8,6 +8,7 @@ import org.board.exercise_board.Post.application.DeleteApplication;
 import org.board.exercise_board.Post.application.SearchApplication;
 import org.board.exercise_board.Post.application.WriteApplication;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
+import org.board.exercise_board.Post.domain.Dto.PostOneDto;
 import org.board.exercise_board.Post.domain.form.ModifyForm;
 import org.board.exercise_board.Post.domain.form.WriteForm;
 import org.board.exercise_board.Post.domain.model.Post;
@@ -84,7 +85,7 @@ public class PostController {
   }
 
   @GetMapping("/read/{postId}")
-  public ResponseEntity<PostDto> readOnePost(
+  public ResponseEntity<PostOneDto> readOnePost(
       @PathVariable(value = "postId") Long postId
   ) {
     return ResponseEntity.ok(readApplication.readOnePost(postId));

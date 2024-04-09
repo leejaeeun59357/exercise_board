@@ -1,5 +1,7 @@
 package org.board.exercise_board.Comment.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Comment.domain.dto.CommentDto;
 import org.board.exercise_board.Comment.domain.form.CommentWriteForm;
@@ -33,5 +35,16 @@ public class CommentService {
     return CommentDto.entityToDto(commentRepository.save(comment));
   }
 
+  /**
+   * 해당 게시물에 작성된 댓글 리스트 반환
+   *
+   * @param post
+   * @return
+   */
+  public List<CommentDto> findComments(Post post) {
+    return commentRepository.findAllByPost(post).stream()
+        .map(CommentDto::entityToDto)
+        .collect(Collectors.toList());
+  }
 
 }
