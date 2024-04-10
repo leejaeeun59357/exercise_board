@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/comment")
 public class CommentController {
 
   private final CommentWriteApplication commentWriteApplication;
