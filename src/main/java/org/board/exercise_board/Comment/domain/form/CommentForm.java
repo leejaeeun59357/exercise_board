@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentWriteForm {
+public class CommentForm {
 
   @NotBlank(message = "댓글 내용 작성은 필수입니다.")
   private String content;

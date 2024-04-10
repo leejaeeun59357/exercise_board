@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Comment.application.CommentWriteApplication;
 import org.board.exercise_board.Comment.domain.dto.CommentDto;
-import org.board.exercise_board.Comment.domain.form.CommentWriteForm;
+import org.board.exercise_board.Comment.domain.form.CommentForm;
 import org.board.exercise_board.User.Security.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,10 +25,10 @@ public class CommentController {
   public ResponseEntity<CommentDto> writeComment(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       @PathVariable(value = "postId") Long postId,
-      @RequestBody @Valid CommentWriteForm commentWriteForm
+      @RequestBody @Valid CommentForm commentForm
   ) {
     return ResponseEntity.ok(
-        commentWriteApplication.saveComment(commentWriteForm, postId,
+        commentWriteApplication.saveComment(commentForm, postId,
             customUserDetails.getUsername()));
   }
 }

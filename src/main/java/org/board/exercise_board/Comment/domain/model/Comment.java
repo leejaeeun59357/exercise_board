@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.board.exercise_board.Comment.domain.form.CommentWriteForm;
+import org.board.exercise_board.Comment.domain.form.CommentForm;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.User.domain.model.User;
 import org.hibernate.envers.AuditOverride;
@@ -41,9 +41,9 @@ public class Comment extends CommentBaseEntity{
   @Setter
   private User user;
 
-  public static Comment formToEntity(CommentWriteForm commentWriteForm) {
+  public static Comment formToEntity(CommentForm commentForm) {
     return Comment.builder()
-        .content(commentWriteForm.getContent())
+        .content(commentForm.getContent())
         .build();
   }
 

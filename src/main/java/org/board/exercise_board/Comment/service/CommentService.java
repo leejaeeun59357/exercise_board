@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Comment.domain.dto.CommentDto;
-import org.board.exercise_board.Comment.domain.form.CommentWriteForm;
+import org.board.exercise_board.Comment.domain.form.CommentForm;
 import org.board.exercise_board.Comment.domain.model.Comment;
 import org.board.exercise_board.Comment.domain.repository.CommentRepository;
 import org.board.exercise_board.Post.domain.model.Post;
@@ -23,11 +23,11 @@ public class CommentService {
   private final UserService userService;
 
   @Transactional
-  public CommentDto saveComment(CommentWriteForm commentWriteForm, Long postId, String writerId) {
+  public CommentDto saveComment(CommentForm commentForm, Long postId, String writerId) {
     Post post = postService.findPost(postId);
     User user = userService.findUser(writerId);
 
-    Comment comment = Comment.formToEntity(commentWriteForm);
+    Comment comment = Comment.formToEntity(commentForm);
 
     comment.setPost(post);
     comment.setUser(user);
