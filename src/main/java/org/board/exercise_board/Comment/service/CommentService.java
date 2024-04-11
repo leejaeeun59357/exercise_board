@@ -10,7 +10,6 @@ import org.board.exercise_board.Comment.domain.form.CommentForm;
 import org.board.exercise_board.Comment.domain.model.Comment;
 import org.board.exercise_board.Comment.domain.repository.CommentRepository;
 import org.board.exercise_board.Comment.exception.CommentCustomException;
-import org.board.exercise_board.Comment.exception.CommentErrorCode;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.Post.service.PostService;
 import org.board.exercise_board.User.domain.model.User;
@@ -51,24 +50,32 @@ public class CommentService {
         .collect(Collectors.toList());
   }
 
-  public Comment findComment(Long commentId) {
-    return commentRepository.findById(commentId)
-        .orElseThrow(() -> new CommentCustomException(NOT_FOUND_COMMENT));
-  }
-
   /**
    * 해당 게시물 내에 댓글이 존재하는지 확인
    *
    * @param post
    * @return
    */
-  public Comment findCommentInPost(Post post, Long commnetId) {
-    return commentRepository.findByIdAndPost(commnetId, post)
+  public Comment findCommentInPost(Post post, Long commentId) {
+    return commentRepository.findByIdAndPost(commentId, post)
         .orElseThrow(() -> new CommentCustomException(NOT_FOUND_COMMENT));
   }
 
   public CommentDto modifyComment(Comment comment, CommentForm commentForm) {
     comment.setContent(commentForm.getContent());
     return CommentDto.entityToDto(commentRepository.save(comment));
+  }
+
+
+
+  /**
+   * 해당 댓글 삭제하는 메서드
+   *
+   * @param comment
+   * @return
+   */
+  public String deleteComment(Comment comment) {
+    commentRepository.delete(comment);
+    return "삭제가 완료되었습니다.";
   }
 }
