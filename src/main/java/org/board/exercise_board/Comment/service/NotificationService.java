@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.Post.service.PostService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -57,6 +58,7 @@ public class NotificationService {
    * 게시글 작성자에게 댓글 작성되면 바로 알림을 보내는 메서드
    * @param postId
    */
+  @Async
   public void notifyComment(Long postId, String commentWriter) {
     Post post = postService.findPost(postId);
 
@@ -66,14 +68,22 @@ public class NotificationService {
       SseEmitter sseEmitter = sseEmitters.get(postWriter);
 
       try {
-        Map<String, String> eventData = new HashMap<>();
-        eventData.put("message","댓글이 달렸습니다.");
-        eventData.put("sender", commentWriter);
+        Map<String, String> eventData = new EventData().eventData(commentWriter);
 
         sseEmitter.send(SseEmitter.event().name("addComment").data(eventData));
       } catch (Exception e) {
         sseEmitters.remove(postWriter);
       }
     }
+  }
+}
+
+
+class EventData {
+  public Map<String,String> eventData(String commentWriter) {
+    Map<String, String> eventData = new HashMap<>();
+    eventData.put("message","댓글이 달렸습니다.");
+    eventData.put("sender", commentWriter);
+    return eventData;
   }
 }
