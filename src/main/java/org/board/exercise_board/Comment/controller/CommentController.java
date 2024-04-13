@@ -38,7 +38,7 @@ public class CommentController {
             customUserDetails.getUsername()));
   }
 
-  @PutMapping("/{postId}/modify/{commentId}")
+  @PutMapping("/{postId}/{commentId}")
   public ResponseEntity<CommentDto> modifyComment(
       @PathVariable(value = "postId") Long postId,
       @PathVariable(value = "commentId") Long commentId,
@@ -51,7 +51,7 @@ public class CommentController {
     );
   }
 
-  @DeleteMapping("/{postId}/delete/{commentId}")
+  @DeleteMapping("/{postId}/{commentId}")
   public ResponseEntity<String> deleteComment(
       @PathVariable(value = "postId") Long postId,
       @PathVariable(value = "commentId") Long commentId,

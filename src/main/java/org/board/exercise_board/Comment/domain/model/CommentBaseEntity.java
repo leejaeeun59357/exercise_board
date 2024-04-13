@@ -14,8 +14,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class CommentBaseEntity {
 
   @CreatedDate
-  private LocalDateTime createdDate;
+  private LocalDateTime createdDateTime;
 
   @LastModifiedDate
-  private LocalDateTime modifiedDate;
+  private LocalDateTime modifiedDateTime;
 }
