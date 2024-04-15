@@ -78,4 +78,9 @@ public class CommentService {
     commentRepository.delete(comment);
     return "삭제가 완료되었습니다.";
   }
+
+  public Comment findComment(Long commentId) {
+    return commentRepository.findById(commentId)
+        .orElseThrow(() -> new CommentCustomException(NOT_FOUND_COMMENT));
+  }
 }
