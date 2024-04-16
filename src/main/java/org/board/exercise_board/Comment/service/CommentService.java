@@ -12,7 +12,7 @@ import org.board.exercise_board.Comment.domain.form.CommentForm;
 import org.board.exercise_board.Comment.domain.model.Comment;
 import org.board.exercise_board.Comment.domain.repository.CommentRepository;
 import org.board.exercise_board.Comment.exception.CommentCustomException;
-import org.board.exercise_board.Liked.service.FindSomething;
+import org.board.exercise_board.Liked.service.FindByType;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.Post.service.PostService;
 import org.board.exercise_board.User.domain.model.User;
@@ -21,13 +21,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
-public class CommentService implements FindSomething {
+@RequiredArgsConstructor
+public class CommentService implements FindByType<Comment> {
 
-  private CommentRepository commentRepository;
-  private PostService postService;
-  private UserService userService;
+  private final CommentRepository commentRepository;
+  private final PostService postService;
+  private final UserService userService;
 
   @Transactional
   public CommentDto saveComment(CommentForm commentForm, Long postId, String writerId) {

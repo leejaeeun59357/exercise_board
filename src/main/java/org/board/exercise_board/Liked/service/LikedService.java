@@ -1,5 +1,7 @@
 package org.board.exercise_board.Liked.service;
 
+import jakarta.annotation.PostConstruct;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Comment.service.CommentService;
 import org.board.exercise_board.Liked.domain.model.Liked;
@@ -18,10 +20,16 @@ public class LikedService {
   private final PostService postService;
   private final CommentService commentService;
   private final UserService userService;
+  Map<Type, FindByType> findServiceByType;
+
+  @PostConstruct
+  void init() {
+    findServiceByType = Map.of(Type.POST, postService, Type.COMMENT, commentService);
+  }
 
   public String saveLiked(Type type, Long id, String loginId) {
 
-    FindService findService = new FindService(type,id);
+    findServiceByType.get(type).find(id);
 
     User user = userService.findUser(loginId);
 
