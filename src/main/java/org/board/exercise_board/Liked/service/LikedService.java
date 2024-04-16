@@ -23,12 +23,12 @@ public class LikedService {
 
     // 게시글이 존재하지 않을 때
     if(type == Type.POST) {
-      var result = postService.findPost(id);
+      var result = postService.find(id);
 
     } else if(type == Type.COMMENT) {
 
       // 댓글이 존재하지 않을 때
-      var result = commentService.findComment(id);
+      var result = commentService.find(id);
     }
 
     User user = userService.findUser(loginId);

@@ -20,7 +20,7 @@ public class CommentDeleteApplication {
 
   public String deleteComment(Long postId, Long commentId, String userId) {
     // 해당 게시글에 해당 댓글이 존재하는지 검사
-    Post post = postService.findPost(postId);
+    Post post = postService.find(postId);
     Comment comment = commentService.findCommentInPost(post, commentId);
 
     // 게시글 작성자이거나, 댓글 작성자만 삭제 가능

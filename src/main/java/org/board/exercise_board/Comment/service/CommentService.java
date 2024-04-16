@@ -10,6 +10,7 @@ import org.board.exercise_board.Comment.domain.form.CommentForm;
 import org.board.exercise_board.Comment.domain.model.Comment;
 import org.board.exercise_board.Comment.domain.repository.CommentRepository;
 import org.board.exercise_board.Comment.exception.CommentCustomException;
+import org.board.exercise_board.Liked.service.FindSomething;
 import org.board.exercise_board.Post.domain.model.Post;
 import org.board.exercise_board.Post.service.PostService;
 import org.board.exercise_board.User.domain.model.User;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CommentService implements FindSomething {
 
   private final CommentRepository commentRepository;
   private final PostService postService;
@@ -27,7 +28,7 @@ public class CommentService {
 
   @Transactional
   public CommentDto saveComment(CommentForm commentForm, Long postId, String writerId) {
-    Post post = postService.findPost(postId);
+    Post post = postService.find(postId);
     User user = userService.findUser(writerId);
 
     Comment comment = Comment.formToEntity(commentForm);
@@ -79,7 +80,8 @@ public class CommentService {
     return "삭제가 완료되었습니다.";
   }
 
-  public Comment findComment(Long commentId) {
+  @Override
+  public Comment find(Long commentId) {
     return commentRepository.findById(commentId)
         .orElseThrow(() -> new CommentCustomException(NOT_FOUND_COMMENT));
   }

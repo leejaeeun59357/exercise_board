@@ -15,7 +15,7 @@ public class DeleteApplication {
   private final PostService postService;
 
   public String deletePost(String writerId, Long postId) {
-    Post post = postService.findPost(postId);
+    Post post = postService.find(postId);
 
     // 로그인한 사용자가 작성자인지 확인
     if(!Objects.equals(writerId, post.getUser().getLoginId())) {

@@ -3,6 +3,7 @@ package org.board.exercise_board.Post.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.Liked.service.FindSomething;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
 import org.board.exercise_board.Post.domain.form.ModifyForm;
 import org.board.exercise_board.Post.domain.form.WriteForm;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class PostService implements FindSomething {
 
   private final PostRepository postRepository;
   private final UserService userService;
@@ -43,7 +44,8 @@ public class PostService {
 
 
 
-  public Post findPost(Long postId) {
+  @Override
+  public Post find(Long postId) {
     return postRepository.findById(postId)
         .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
   }
