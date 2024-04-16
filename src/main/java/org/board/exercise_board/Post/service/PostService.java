@@ -2,6 +2,8 @@ package org.board.exercise_board.Post.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Liked.service.FindSomething;
 import org.board.exercise_board.Post.domain.Dto.PostDto;
@@ -19,11 +21,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostService implements FindSomething {
 
-  private final PostRepository postRepository;
-  private final UserService userService;
+  private PostRepository postRepository;
+  private UserService userService;
 
   /**
    * 해당 사용자 정보와 입력 받은 Post 제목, 내용을 함께 DB에 저장

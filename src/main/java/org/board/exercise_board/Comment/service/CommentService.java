@@ -4,6 +4,8 @@ import static org.board.exercise_board.Comment.exception.CommentErrorCode.NOT_FO
 
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.Comment.domain.dto.CommentDto;
 import org.board.exercise_board.Comment.domain.form.CommentForm;
@@ -19,12 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentService implements FindSomething {
 
-  private final CommentRepository commentRepository;
-  private final PostService postService;
-  private final UserService userService;
+  private CommentRepository commentRepository;
+  private PostService postService;
+  private UserService userService;
 
   @Transactional
   public CommentDto saveComment(CommentForm commentForm, Long postId, String writerId) {

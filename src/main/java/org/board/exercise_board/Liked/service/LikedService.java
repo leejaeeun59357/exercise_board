@@ -21,15 +21,7 @@ public class LikedService {
 
   public String saveLiked(Type type, Long id, String loginId) {
 
-    // 게시글이 존재하지 않을 때
-    if(type == Type.POST) {
-      var result = postService.find(id);
-
-    } else if(type == Type.COMMENT) {
-
-      // 댓글이 존재하지 않을 때
-      var result = commentService.find(id);
-    }
+    FindService findService = new FindService(type,id);
 
     User user = userService.findUser(loginId);
 
