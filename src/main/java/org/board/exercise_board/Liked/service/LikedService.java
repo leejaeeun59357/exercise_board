@@ -33,23 +33,26 @@ public class LikedService {
 
     User user = userService.findUser(loginId);
 
-    // 좋아요가 중복되었을 때
-    if(likedRepository.existsByTypeAndTypeIdAndUser(type,id,user)) {
-      Liked liked = likedRepository.findByTypeAndTypeIdAndUser(type,id,user);
-      likedRepository.delete(liked);
+    synchronized(this){
 
-      return "좋아요를 취소했습니다.";
+      // 좋아요가 중복되었을 때
+      if(likedRepository.existsByTypeAndTypeIdAndUser(type,id,user)) {
+        Liked liked = likedRepository.findByTypeAndTypeIdAndUser(type,id,user);
+        likedRepository.delete(liked);
+
+        return "좋아요를 취소했습니다.";
+      }
+
+      Liked liked = Liked.builder()
+          .type(type)
+          .typeId(id)
+          .user(user)
+          .build();
+
+      // 정상적으로 저장
+      likedRepository.save(liked);
+      return "좋아요를 눌렀습니다.";
     }
-
-    Liked liked = Liked.builder()
-        .type(type)
-        .typeId(id)
-        .user(user)
-        .build();
-
-    // 정상적으로 저장
-    likedRepository.save(liked);
-    return "좋아요를 눌렀습니다.";
   }
 
 }

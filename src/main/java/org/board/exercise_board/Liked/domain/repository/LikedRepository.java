@@ -6,6 +6,6 @@ import org.board.exercise_board.User.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikedRepository extends JpaRepository<Liked, Long> {
-  Boolean existsByTypeAndTypeIdAndUser(Type type, Long typeId, User user);
+  boolean existsByTypeAndTypeIdAndUser(Type type, Long typeId, User user);
   Liked findByTypeAndTypeIdAndUser(Type type, Long typeId, User user);
 }
