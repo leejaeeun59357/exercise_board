@@ -24,7 +24,7 @@ public class CommentModifyApplication {
   public CommentDto modifyComment(CommentForm commentForm, String loginId, Long postId, Long commentId) {
 
     // 해당 게시글에 해당 댓글이 있는지 검사
-    Post post = postService.findPost(postId);
+    Post post = postService.find(postId);
     Comment comment = commentService.findCommentInPost(post, commentId);
 
     // 현재 로그인된 사용자와 댓글 작성자가 동일한지 검사

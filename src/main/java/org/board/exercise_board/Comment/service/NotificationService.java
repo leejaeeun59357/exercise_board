@@ -60,7 +60,7 @@ public class NotificationService {
    */
   @Async
   public void notifyComment(Long postId, String commentWriter) {
-    Post post = postService.findPost(postId);
+    Post post = postService.find(postId);
 
     String postWriter = post.getUser().getLoginId();
 

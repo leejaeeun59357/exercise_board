@@ -33,7 +33,7 @@ public class ReadApplication {
    * @return
    */
   public PostOneDto readOnePost(Long postId) {
-    Post post = postService.findPost(postId);
+    Post post = postService.find(postId);
 
     List<CommentDto> comments = commentService.findComments(post);
 

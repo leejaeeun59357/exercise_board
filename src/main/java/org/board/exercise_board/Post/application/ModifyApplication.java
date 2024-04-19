@@ -30,7 +30,7 @@ public class ModifyApplication {
     }
 
     // 해당 제목의 게시물 찾기
-    Post post = postService.findPost(postId);
+    Post post = postService.find(postId);
 
     // 수정하려는 사람과 작성자가 동일 인물인지 확인
     if(!Objects.equals(writerId, post.getUser().getLoginId())) {
