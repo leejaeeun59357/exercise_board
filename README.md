@@ -14,6 +14,7 @@
 - MariaDB
 - swagger
 - SSE (Server-Sent Event)
+- SMTP
 
 ## ✔프로젝트 기능 및 설계✔
 - [x] 회원가입 기능
