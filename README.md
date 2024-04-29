@@ -77,5 +77,11 @@
 - [ ] 카카오 소셜 로그인 기능 구현
 - [ ] Elastic Search를 사용한 게시글 제목 검색 기능 구현
 
+## 수정필요한 부분
+- [ ] package 명 소문자로 변경
+- [ ] searchPost 메서드 반환값 list -> Page 로 변경
+- [ ] synchronized는 성능저하 발생 -> Redis를 이용하여 lock할 수 있도록 수정
+- [ ] findServiceByType(LikedService.java) 에서 find -> exist로 변경
+
 ## 😂Trouble Shooting😂
 
