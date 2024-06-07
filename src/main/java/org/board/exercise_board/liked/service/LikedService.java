@@ -20,16 +20,16 @@ public class LikedService {
   private final PostService postService;
   private final CommentService commentService;
   private final UserService userService;
-  Map<Type, FindByType> findServiceByType;
+  Map<Type, FindByType> existServiceByType;
 
   @PostConstruct
   void init() {
-    findServiceByType = Map.of(Type.POST, postService, Type.COMMENT, commentService);
+    existServiceByType = Map.of(Type.POST, postService, Type.COMMENT, commentService);
   }
 
   public String saveLiked(Type type, Long id, String loginId) {
 
-    findServiceByType.get(type).find(id);
+    existServiceByType.get(type).find(id);
 
     User user = userService.findUser(loginId);
 
