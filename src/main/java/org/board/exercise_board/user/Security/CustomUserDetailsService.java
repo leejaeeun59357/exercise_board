@@ -1,11 +1,11 @@
-package org.board.exercise_board.User.Security;
+package org.board.exercise_board.user.Security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.board.exercise_board.User.domain.model.User;
-import org.board.exercise_board.User.domain.repository.UserRepository;
-import org.board.exercise_board.User.exception.CustomException;
-import org.board.exercise_board.User.exception.ErrorCode;
+import org.board.exercise_board.user.domain.model.User;
+import org.board.exercise_board.user.domain.repository.UserRepository;
+import org.board.exercise_board.user.exception.CustomException;
+import org.board.exercise_board.user.exception.ErrorCode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

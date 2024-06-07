@@ -1,4 +1,4 @@
-package org.board.exercise_board.User.exception;
+package org.board.exercise_board.user.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

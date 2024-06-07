@@ -1,4 +1,4 @@
-package org.board.exercise_board.User.Security;
+package org.board.exercise_board.user.Security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
