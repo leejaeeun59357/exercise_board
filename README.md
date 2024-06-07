@@ -90,10 +90,11 @@
 - [ ] Elastic Search를 사용한 게시글 제목 검색 기능 구현
 
 ## 수정필요한 부분
-- [ ] package 명 소문자로 변경
-- [ ] searchPost 메서드 반환값 list -> Page 로 변경
+- [x] package 명 소문자로 변경
+- [x] ~~searchPost 메서드 반환값 list -> Page 로 변경~~
+    - Page로 반환받은 결과값을 dto로 변환하는 과정에서 List로 변경되기 때문에 반환값에는 변화가 없으므로 변경X
 - [ ] synchronized는 성능저하 발생 -> Redis를 이용하여 lock할 수 있도록 수정
-- [ ] findServiceByType(LikedService.java) 에서 find -> exist로 변경
+- [x] findServiceByType(LikedService.java) 에서 find -> exist로 변경
 
 ## 😂Trouble Shooting😂
 
