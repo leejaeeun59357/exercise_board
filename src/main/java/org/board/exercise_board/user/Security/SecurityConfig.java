@@ -44,7 +44,12 @@ public class SecurityConfig {
         //홈,로그인,회원가입 페이지는 로그인 없이 접근 가능
         .authorizeHttpRequests(
             (request) -> request
-                .requestMatchers("/post/read/**","/user/**","/post/search").permitAll()
+                .requestMatchers(
+                    "/post/read/**","/user/**","/post/search"
+                    ,"/swagger-ui/**",
+                    "/swagger-resources/**",
+                    "/v3/api-docs/**"
+                ).permitAll()
                 .anyRequest().authenticated()
         )
 

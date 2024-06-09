@@ -1,5 +1,6 @@
 package org.board.exercise_board.liked.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.liked.domain.model.Type;
 import org.board.exercise_board.liked.service.LikedService;
@@ -18,6 +19,7 @@ public class LikedController {
 
   private final LikedService likedService;
 
+  @Operation(summary = "게시글 좋아요")
   @PostMapping("/post")
   public ResponseEntity<String> postLiked(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -27,6 +29,7 @@ public class LikedController {
         customUserDetails.getUsername()));
   }
 
+  @Operation(summary = "댓글 좋아요")
   @PostMapping("/comment")
   public ResponseEntity<String> commentLiked(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,

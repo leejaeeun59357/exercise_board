@@ -1,5 +1,6 @@
 package org.board.exercise_board.post.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.post.application.ModifyApplication;
@@ -40,13 +41,7 @@ public class PostController {
   private final ModifyApplication modifyApplication;
   private final SearchApplication searchApplication;
 
-  /**
-   * 게시글 작성하는 Controller
-   *
-   * @param customUserDetails 현재 로그인된 사용자 정보
-   * @param writeForm         작성하고자 하는 제목, 내용
-   * @return
-   */
+  @Operation(summary = "게시글 작성")
   @PostMapping("/write")
   public ResponseEntity<PostDto> writePost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -56,13 +51,8 @@ public class PostController {
         writeApplication.writePost(writeForm, customUserDetails.getUsername()));
   }
 
-  /**
-   * 해당 사용자와 제목이 일치하는 게시글 삭제
-   *
-   * @param customUserDetails
-   * @param postId
-   * @return
-   */
+
+  @Operation(summary = "게시글 삭제")
   @DeleteMapping("/delete")
   public String deletePost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -71,12 +61,7 @@ public class PostController {
     return deleteApplication.deletePost(customUserDetails.getUsername(), postId);
   }
 
-  /**
-   * 전체 게시물을 10개씩 조회
-   *
-   * @param pageable
-   * @return
-   */
+  @Operation(summary = "게시글 10개씩 조회")
   @GetMapping("/read")
   public ResponseEntity<Page<Post>> readAllPost(
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
@@ -84,6 +69,7 @@ public class PostController {
     return ResponseEntity.ok(readApplication.readAllPosts(pageable));
   }
 
+  @Operation(summary = "게시글 1개 조회")
   @GetMapping("/read/{postId}")
   public ResponseEntity<PostOneDto> readOnePost(
       @PathVariable(value = "postId") Long postId
@@ -91,13 +77,7 @@ public class PostController {
     return ResponseEntity.ok(readApplication.readOnePost(postId));
   }
 
-  /**
-   * 작성자확인 후 작성자만 게시글 수정할 수 있도록 함
-   *
-   * @param customUserDetails
-   * @param modifyForm
-   * @return
-   */
+  @Operation(summary = "게시글 수정")
   @PutMapping("/modify")
   public ResponseEntity<PostDto> modifyPost(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -108,13 +88,8 @@ public class PostController {
         modifyApplication.modifyPost(postId,modifyForm, customUserDetails.getUsername()));
   }
 
-  /**
-   * 키워드를 포함한 제목이 있는 게시글 조회, 별도의 인증이 필요하지 않음
-   *
-   * @param keyword
-   * @param pageable
-   * @return
-   */
+
+  @Operation(summary = "게시글 키워드 검색")
   @GetMapping("/search")
   public ResponseEntity<List<PostDto>> searchPost(
       @RequestParam String keyword,
