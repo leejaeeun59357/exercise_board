@@ -1,5 +1,6 @@
 package org.board.exercise_board.user.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.user.application.SignInApplication;
@@ -26,6 +27,7 @@ public class UserController {
   private final VerifyEmailApplication verifyEmailApplication;
   private final SignInApplication signInApplication;
 
+  @Operation(summary = "회원가입")
   @PostMapping("/signup")
   public ResponseEntity<UserDto> signup(@Valid @RequestBody SignUpForm signUpForm) {
     return ResponseEntity.ok(signUpApplication.signup(signUpForm));
@@ -36,17 +38,14 @@ public class UserController {
    * @param tokenId
    * @return
    */
+  @Operation(summary = "이메일 인증")
   @GetMapping("/verified/{tokenId}")
   public String verifyEmail(@PathVariable("tokenId") String tokenId) {
     verifyEmailApplication.verifyEmail(tokenId);
     return "인증이 완료되었습니다.";
   }
 
-  /**
-   * jwt를 사용한 로그인 기능
-   * @param signInForm
-   * @return
-   */
+  @Operation(summary = "로그인")
   @PostMapping("/signin")
   public ResponseEntity<JwtToken> signin(@Valid @RequestBody SignInForm signInForm) {
     return ResponseEntity.ok(signInApplication.signin(signInForm));

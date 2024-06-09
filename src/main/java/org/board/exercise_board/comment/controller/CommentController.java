@@ -1,5 +1,6 @@
 package org.board.exercise_board.comment.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.comment.application.CommentDeleteApplication;
@@ -27,6 +28,7 @@ public class CommentController {
   private final CommentModifyApplication commentModifyApplication;
   private final CommentDeleteApplication commentDeleteApplication;
 
+  @Operation(summary = "댓글 작성")
   @PostMapping("/{postId}/write")
   public ResponseEntity<CommentDto> writeComment(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -38,6 +40,7 @@ public class CommentController {
             customUserDetails.getUsername()));
   }
 
+  @Operation(summary = "댓글 수정")
   @PutMapping("/{postId}/{commentId}")
   public ResponseEntity<CommentDto> modifyComment(
       @PathVariable(value = "postId") Long postId,
@@ -51,6 +54,7 @@ public class CommentController {
     );
   }
 
+  @Operation(summary = "댓글 삭제")
   @DeleteMapping("/{postId}/{commentId}")
   public ResponseEntity<String> deleteComment(
       @PathVariable(value = "postId") Long postId,
