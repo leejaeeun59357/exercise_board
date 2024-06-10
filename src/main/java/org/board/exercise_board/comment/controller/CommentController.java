@@ -8,7 +8,7 @@ import org.board.exercise_board.comment.application.CommentModifyApplication;
 import org.board.exercise_board.comment.application.CommentWriteApplication;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
-import org.board.exercise_board.user.Security.CustomUserDetails;
+import org.board.exercise_board.user.domain.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,13 +31,13 @@ public class CommentController {
   @Operation(summary = "댓글 작성")
   @PostMapping("/{postId}/write")
   public ResponseEntity<CommentDto> writeComment(
-      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @AuthenticationPrincipal User user,
       @PathVariable(value = "postId") Long postId,
       @RequestBody @Valid CommentForm commentForm
   ) {
     return ResponseEntity.ok(
         commentWriteApplication.saveComment(commentForm, postId,
-            customUserDetails.getUsername()));
+            user.getUsername()));
   }
 
   @Operation(summary = "댓글 수정")
@@ -45,11 +45,11 @@ public class CommentController {
   public ResponseEntity<CommentDto> modifyComment(
       @PathVariable(value = "postId") Long postId,
       @PathVariable(value = "commentId") Long commentId,
-      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @AuthenticationPrincipal User user,
       @RequestBody @Valid CommentForm commentForm
   ) {
     return ResponseEntity.ok(
-        commentModifyApplication.modifyComment(commentForm, customUserDetails.getUsername(), postId,
+        commentModifyApplication.modifyComment(commentForm, user.getUsername(), postId,
             commentId)
     );
   }
@@ -59,9 +59,9 @@ public class CommentController {
   public ResponseEntity<String> deleteComment(
       @PathVariable(value = "postId") Long postId,
       @PathVariable(value = "commentId") Long commentId,
-      @AuthenticationPrincipal CustomUserDetails customUserDetails
+      @AuthenticationPrincipal User user
   ) {
     return ResponseEntity.ok(commentDeleteApplication.deleteComment(
-        postId, commentId, customUserDetails.getUsername()));
+        postId, commentId, user.getUsername()));
   }
 }

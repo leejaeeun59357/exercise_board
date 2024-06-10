@@ -13,7 +13,7 @@ import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
 import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.post.domain.model.Post;
-import org.board.exercise_board.user.Security.CustomUserDetails;
+import org.board.exercise_board.user.domain.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -44,21 +44,21 @@ public class PostController {
   @Operation(summary = "게시글 작성")
   @PostMapping("/write")
   public ResponseEntity<PostDto> writePost(
-      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @AuthenticationPrincipal User user,
       @RequestBody WriteForm writeForm) {
 
     return ResponseEntity.ok(
-        writeApplication.writePost(writeForm, customUserDetails.getUsername()));
+        writeApplication.writePost(writeForm, user.getUsername()));
   }
 
 
   @Operation(summary = "게시글 삭제")
   @DeleteMapping("/delete")
   public String deletePost(
-      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @AuthenticationPrincipal User user,
       @RequestParam Long postId
   ) {
-    return deleteApplication.deletePost(customUserDetails.getUsername(), postId);
+    return deleteApplication.deletePost(user.getUsername(), postId);
   }
 
   @Operation(summary = "게시글 10개씩 조회")
@@ -80,12 +80,12 @@ public class PostController {
   @Operation(summary = "게시글 수정")
   @PutMapping("/modify")
   public ResponseEntity<PostDto> modifyPost(
-      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      @AuthenticationPrincipal User user,
       @RequestParam Long postId,
       @RequestBody ModifyForm modifyForm
   ) {
     return ResponseEntity.ok(
-        modifyApplication.modifyPost(postId,modifyForm, customUserDetails.getUsername()));
+        modifyApplication.modifyPost(postId,modifyForm, user.getUsername()));
   }
 
 
