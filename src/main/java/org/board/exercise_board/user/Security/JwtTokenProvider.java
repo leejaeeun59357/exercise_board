@@ -21,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,21 +36,14 @@ public class JwtTokenProvider {
   // 유효시간 = 7일
   private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
   private final Key key;
-  private final CustomUserDetailsService customUserDetailsService;
 
-  public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey,
-      CustomUserDetailsService customUserDetailsService) {
-    this.customUserDetailsService = customUserDetailsService;
+  public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey
+  ) {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-  /**
-   * 유저 정보로 생성된 Authenticaiton으로 AccessToken, RefreshToken 생성
-   *
-   * @param authentication
-   * @return
-   */
+
   public JwtToken createToken(Authentication authentication) {
 
     // 권한 가져오기
@@ -101,9 +93,7 @@ public class JwtTokenProvider {
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
-    // UserDetails 객체 생성해서 Authentication 리턴
-    UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
-    return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+    return new UsernamePasswordAuthenticationToken(accessToken, authorities);
   }
 
 

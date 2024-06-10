@@ -32,7 +32,7 @@ public class SignUpApplication {
     }
 
     // signupform을 통해 입력받은 user 정보 저장
-    User user = userService.save(signUpForm);
+    User user = userService.signUp(signUpForm);
 
     // user 정보를 사용하여 token 생성
     Token token = tokenService.createToken(user);

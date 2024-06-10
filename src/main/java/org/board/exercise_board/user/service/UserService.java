@@ -1,6 +1,7 @@
 package org.board.exercise_board.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.board.exercise_board.post.exception.PostCustomException;
 import org.board.exercise_board.post.exception.PostErrorCode;
 import org.board.exercise_board.user.Security.JwtTokenProvider;
@@ -8,51 +9,41 @@ import org.board.exercise_board.user.domain.Form.SignUpForm;
 import org.board.exercise_board.user.domain.model.JwtToken;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.domain.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.board.exercise_board.user.exception.CustomException;
+import org.board.exercise_board.user.exception.ErrorCode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+@Slf4j
+public class UserService implements UserDetailsService {
 
   private final UserRepository userRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-  /**
-   * 이미 등록된 email 인지 검사
-   *
-   * @param email
-   * @return true/false
-   */
+
   public boolean isExistEmail(String email) {
     return userRepository.existsByEmail(email);
   }
 
-  /**
-   * 이미 등록된 ID 인지 검사
-   *
-   * @param loginId
-   * @return true/false
-   */
+
   public boolean isExistLoginId(String loginId) {
     return userRepository.findByLoginId(loginId).isPresent();
   }
 
-  /**
-   * 입력받은 form 정보를 pw는 encoding 하여 db에 저장
-   *
-   * @param signUpForm
-   * @return
-   */
-  public User save(SignUpForm signUpForm) {
+
+  public User signUp(SignUpForm signUpForm) {
     User user = User.formToEntity(signUpForm);
     user.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
     return userRepository.save(user);
@@ -74,12 +65,7 @@ public class UserService {
     return token;
   }
 
-  /**
-   * 해당 사용자가 이메일 인증을 받았는지 검사
-   *
-   * @param writerId
-   * @return
-   */
+
   public boolean isEmailVerified(String writerId) {
     User user = userRepository.findByLoginId(writerId)
         .orElseThrow(() -> new PostCustomException(PostErrorCode.NOT_FOUND_USER));
@@ -97,5 +83,12 @@ public class UserService {
         .orElseThrow(() -> new PostCustomException(PostErrorCode.NOT_FOUND_USER));
 
     return user;
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+    log.info(" --- 회원 정보 찾기, {} --- ", loginId);
+    return userRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
   }
 }
