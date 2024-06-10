@@ -14,6 +14,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
 import org.hibernate.envers.AuditOverride;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @NoArgsConstructor
@@ -21,7 +27,7 @@ import org.hibernate.envers.AuditOverride;
 @Builder
 @Getter
 @AuditOverride(forClass = BaseEntity.class)
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +46,6 @@ public class User extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private Role role;
 
-  // 이메일 인증이 완료되면 true로 변경하기 위해 @Setter 사용
   @Setter
   private Boolean verifiedStatus;
 
@@ -58,5 +63,42 @@ public class User extends BaseEntity {
         .verifiedStatus(false)
         .role(Role.USER)
         .build();
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    Collection<GrantedAuthority> authorities = new ArrayList<>();
+    authorities.add(new SimpleGrantedAuthority(this.getRole().toString()));
+    return authorities;
+  }
+
+  @Override
+  public String getPassword() {
+    return this.password;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.loginId;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 }
