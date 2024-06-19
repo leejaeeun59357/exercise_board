@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.post.application.ModifyApplication;
 import org.board.exercise_board.post.application.ReadApplication;
-import org.board.exercise_board.post.application.SearchApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
@@ -36,7 +35,6 @@ public class PostController {
 
   private final ReadApplication readApplication;
   private final ModifyApplication modifyApplication;
-  private final SearchApplication searchApplication;
   private final PostService postService;
 
   @Operation(summary = "게시글 작성")
@@ -93,6 +91,6 @@ public class PostController {
       @RequestParam String keyword,
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
-    return ResponseEntity.ok(searchApplication.searchPost(keyword, pageable));
+    return ResponseEntity.ok(postService.searchPost(keyword, pageable));
   }
 }

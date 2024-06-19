@@ -26,13 +26,7 @@ public class PostService implements FindByType<Post> {
   private final PostRepository postRepository;
   private final UserService userService;
 
-  /**
-   * 해당 사용자 정보와 입력 받은 Post 제목, 내용을 함께 DB에 저장
-   *
-   * @param writeForm
-   * @param writerId
-   * @return
-   */
+
   @Transactional
   public PostDto writePost(WriteForm writeForm, String writerId) {
     // 제목이나 내용이 null값인지 검사
@@ -113,6 +107,10 @@ public class PostService implements FindByType<Post> {
    */
   @Transactional
   public List<PostDto> searchPost(String keyword, Pageable pageable) {
+    // 검색 키워드가 null 일 때
+    if(Objects.equals(keyword, "") || keyword == null) {
+      throw new PostCustomException(PostErrorCode.KEYWORD_IS_EMPTY);
+    }
 
     return postRepository.findBySubjectContaining(keyword,pageable)
         .stream().map(PostDto::entityToDto)
