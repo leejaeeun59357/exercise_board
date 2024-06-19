@@ -3,7 +3,6 @@ package org.board.exercise_board.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.board.exercise_board.user.application.SignInApplication;
 import org.board.exercise_board.user.application.VerifyEmailApplication;
 import org.board.exercise_board.user.domain.Dto.UserDto;
 import org.board.exercise_board.user.domain.Form.SignInForm;
@@ -25,7 +24,6 @@ public class UserController {
 
   private final UserService userService;
   private final VerifyEmailApplication verifyEmailApplication;
-  private final SignInApplication signInApplication;
 
   @Operation(summary = "회원가입")
   @PostMapping("/signup")
@@ -48,6 +46,6 @@ public class UserController {
   @Operation(summary = "로그인")
   @PostMapping("/signin")
   public ResponseEntity<JwtToken> signin(@Valid @RequestBody SignInForm signInForm) {
-    return ResponseEntity.ok(signInApplication.signin(signInForm));
+    return ResponseEntity.ok(userService.signin(signInForm));
   }
 }
