@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.user.application.SignInApplication;
-import org.board.exercise_board.user.application.SignUpApplication;
 import org.board.exercise_board.user.application.VerifyEmailApplication;
 import org.board.exercise_board.user.domain.Dto.UserDto;
 import org.board.exercise_board.user.domain.Form.SignInForm;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
 import org.board.exercise_board.user.domain.model.JwtToken;
+import org.board.exercise_board.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-  private final SignUpApplication signUpApplication;
+  private final UserService userService;
   private final VerifyEmailApplication verifyEmailApplication;
   private final SignInApplication signInApplication;
 
   @Operation(summary = "회원가입")
   @PostMapping("/signup")
   public ResponseEntity<UserDto> signup(@Valid @RequestBody SignUpForm signUpForm) {
-    return ResponseEntity.ok(signUpApplication.signup(signUpForm));
+    return ResponseEntity.ok(userService.signUp(signUpForm));
   }
 
   /**

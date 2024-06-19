@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.board.exercise_board.post.exception.PostCustomException;
 import org.board.exercise_board.post.exception.PostErrorCode;
 import org.board.exercise_board.user.Security.JwtTokenProvider;
+import org.board.exercise_board.user.domain.Dto.UserDto;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
 import org.board.exercise_board.user.domain.model.JwtToken;
+import org.board.exercise_board.user.domain.model.Token;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.domain.repository.UserRepository;
 import org.board.exercise_board.user.exception.CustomException;
@@ -29,6 +31,8 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
+  private final TokenService tokenService;
+  private final EmailService emailService;
 
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -43,10 +47,22 @@ public class UserService implements UserDetailsService {
   }
 
 
-  public User signUp(SignUpForm signUpForm) {
+  public UserDto signUp(SignUpForm signUpForm) {
+
+    if(this.isExistLoginId(signUpForm.getLoginId())) {
+      throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
+    }
+    if(this.isExistEmail(signUpForm.getEmail())) {
+      throw new CustomException(ErrorCode.ALREATY_REGISTERD_EMAIL);
+    }
     User user = User.formToEntity(signUpForm);
     user.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
-    return userRepository.save(user);
+    userRepository.save(user);
+
+    Token token = tokenService.createToken(user);
+    emailService.sendEmail(signUpForm.getEmail(), token);
+
+    return UserDto.entityToDto(user);
   }
 
   public JwtToken signin(String loginId, String password) {
