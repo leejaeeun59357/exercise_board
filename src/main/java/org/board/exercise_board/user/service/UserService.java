@@ -41,22 +41,12 @@ public class UserService implements UserDetailsService {
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-  public boolean isExistEmail(String email) {
-    return userRepository.existsByEmail(email);
-  }
-
-
-  public boolean isExistLoginId(String loginId) {
-    return userRepository.findByLoginId(loginId).isPresent();
-  }
-
-
   public UserDto signUp(SignUpForm signUpForm) {
 
-    if(this.isExistLoginId(signUpForm.getLoginId())) {
+    if(userRepository.existsByLoginId(signUpForm.getLoginId())) {
       throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
     }
-    if(this.isExistEmail(signUpForm.getEmail())) {
+    if(this.userRepository.existsByEmail(signUpForm.getEmail())) {
       throw new CustomException(ErrorCode.ALREATY_REGISTERD_EMAIL);
     }
 
@@ -91,6 +81,23 @@ public class UserService implements UserDetailsService {
     return token;
   }
 
+  public void verifyEmail(String tokenId) {
+
+    Token token = tokenService.findToken(tokenId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+    // 이미 인증완료되었다면 Exception 발생
+    if(token.getUser().getVerifiedStatus()) {
+      throw new CustomException(ErrorCode.ALREADY_VERIFIED);
+    }
+
+    // 만료 시간이 지났다면 Exception 발생
+    if(tokenService.verifyExpirationDate(token)) {
+      tokenService.updateVerifyStatus(token);
+    } else {
+      throw new CustomException(ErrorCode.EXPIRATION_TIME_IS_OVER);
+    }
+  }
 
   public boolean isEmailVerified(String writerId) {
     User user = userRepository.findByLoginId(writerId)

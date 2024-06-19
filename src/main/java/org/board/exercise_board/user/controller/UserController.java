@@ -3,7 +3,6 @@ package org.board.exercise_board.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.board.exercise_board.user.application.VerifyEmailApplication;
 import org.board.exercise_board.user.domain.Dto.UserDto;
 import org.board.exercise_board.user.domain.Form.SignInForm;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService userService;
-  private final VerifyEmailApplication verifyEmailApplication;
 
   @Operation(summary = "회원가입")
   @PostMapping("/signup")
@@ -31,15 +29,11 @@ public class UserController {
     return ResponseEntity.ok(userService.signUp(signUpForm));
   }
 
-  /**
-   * 인증링크를 통해 입력된 tokenId를 사용하여 사용자 verified_status를 true로 변경
-   * @param tokenId
-   * @return
-   */
+
   @Operation(summary = "이메일 인증")
   @GetMapping("/verified/{tokenId}")
   public String verifyEmail(@PathVariable("tokenId") String tokenId) {
-    verifyEmailApplication.verifyEmail(tokenId);
+    userService.verifyEmail(tokenId);
     return "인증이 완료되었습니다.";
   }
 
