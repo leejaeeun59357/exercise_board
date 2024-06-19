@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +22,7 @@ import org.hibernate.envers.AuditOverride;
 @NoArgsConstructor
 @AllArgsConstructor
 @AuditOverride(forClass = BaseEntity.class)
-public class Token extends BaseEntity{
+public class EmailToken extends BaseEntity{
 
   @Id
   @GeneratedValue(generator = "uuid2")
