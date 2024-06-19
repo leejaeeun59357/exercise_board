@@ -32,8 +32,23 @@ public class PostService implements FindByType<Post> {
    * @param writerId
    * @return
    */
-  public PostDto savePost(WriteForm writeForm, String writerId) {
+  @Transactional
+  public PostDto writePost(WriteForm writeForm, String writerId) {
+    // 제목이나 내용이 null값인지 검사
+    if (writeForm.getSubject() == null || writeForm.getSubject().isEmpty()) {
+      throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
+    }
+
+    if (writeForm.getContent() == null || writeForm.getContent().isEmpty()) {
+      throw new PostCustomException(PostErrorCode.CONTENT_IS_EMPTY);
+    }
+
     User user = userService.findUser(writerId);
+
+    // 이메일 인증이 완료되었는지 검사
+    if (!user.getVerifiedStatus()) {
+      throw new PostCustomException(PostErrorCode.NOT_VERIFIED_EMAIL);
+    }
 
     Post post = Post.formToEntity(writeForm);
     post.setUser(user);

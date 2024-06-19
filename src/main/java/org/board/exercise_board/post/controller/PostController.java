@@ -7,12 +7,12 @@ import org.board.exercise_board.post.application.ModifyApplication;
 import org.board.exercise_board.post.application.ReadApplication;
 import org.board.exercise_board.post.application.DeleteApplication;
 import org.board.exercise_board.post.application.SearchApplication;
-import org.board.exercise_board.post.application.WriteApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
 import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.post.domain.model.Post;
+import org.board.exercise_board.post.service.PostService;
 import org.board.exercise_board.user.domain.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,11 +35,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/post")
 public class PostController {
 
-  private final WriteApplication writeApplication;
   private final DeleteApplication deleteApplication;
   private final ReadApplication readApplication;
   private final ModifyApplication modifyApplication;
   private final SearchApplication searchApplication;
+  private final PostService postService;
 
   @Operation(summary = "게시글 작성")
   @PostMapping("/write")
@@ -48,7 +48,7 @@ public class PostController {
       @RequestBody WriteForm writeForm) {
 
     return ResponseEntity.ok(
-        writeApplication.writePost(writeForm, user.getUsername()));
+        postService.writePost(writeForm, user.getUsername()));
   }
 
 
