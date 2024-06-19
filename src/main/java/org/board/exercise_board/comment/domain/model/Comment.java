@@ -1,11 +1,6 @@
 package org.board.exercise_board.comment.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,14 +10,19 @@ import org.board.exercise_board.comment.domain.form.CommentForm;
 import org.board.exercise_board.post.domain.model.Post;
 import org.board.exercise_board.user.domain.model.User;
 import org.hibernate.envers.AuditOverride;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@AuditOverride(forClass = CommentBaseEntity.class)
-public class Comment extends CommentBaseEntity{
+@EntityListeners(AuditingEntityListener.class)
+public class Comment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +40,12 @@ public class Comment extends CommentBaseEntity{
   @JoinColumn(name = "user_id")
   @Setter
   private User user;
+
+  @CreatedDate
+  private LocalDateTime createdDateTime;
+
+  @LastModifiedDate
+  private LocalDateTime modifiedDateTime;
 
   public static Comment formToEntity(CommentForm commentForm) {
     return Comment.builder()

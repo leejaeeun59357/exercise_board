@@ -1,27 +1,25 @@
 package org.board.exercise_board.liked.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.board.exercise_board.user.domain.model.User;
 import org.hibernate.envers.AuditOverride;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-@AuditOverride(forClass = LikedBaseEntity.class)
-public class Liked extends LikedBaseEntity{
+@EntityListeners(AuditingEntityListener.class)
+public class Liked {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +33,10 @@ public class Liked extends LikedBaseEntity{
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
+
+  @CreatedDate
+  private LocalDateTime createdDateTime;
+
+  @LastModifiedDate
+  private LocalDateTime modifiedDateTime;
 }

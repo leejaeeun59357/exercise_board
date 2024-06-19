@@ -1,13 +1,9 @@
 package org.board.exercise_board.post.domain.model;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,15 +13,17 @@ import lombok.Setter;
 import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.user.domain.model.User;
 import org.hibernate.annotations.Type;
-import org.hibernate.envers.AuditOverride;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@AuditOverride(forClass = PostBaseEntity.class)
-public class Post extends PostBaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class Post {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -42,6 +40,12 @@ public class Post extends PostBaseEntity {
   @JoinColumn(name = "user_id")
   @Setter
   private User user;
+
+  @CreatedDate
+  private LocalDateTime createdDate;
+
+  @LastModifiedDate
+  private LocalDateTime modifiedDate;
 
   public static Post formToEntity(WriteForm writeForm) {
     return Post.builder()

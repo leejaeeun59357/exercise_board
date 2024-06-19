@@ -1,11 +1,7 @@
 package org.board.exercise_board.user.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -15,14 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.AuditOverride;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@AuditOverride(forClass = BaseEntity.class)
-public class EmailToken extends BaseEntity{
+@EntityListeners(AuditingEntityListener.class)
+public class EmailToken {
 
   @Id
   @GeneratedValue(generator = "uuid2")
@@ -36,4 +35,10 @@ public class EmailToken extends BaseEntity{
 
   @Setter
   private LocalDateTime expirationDateTime;
+
+  @CreatedDate
+  private LocalDateTime createdDate;
+
+  @LastModifiedDate
+  private LocalDateTime modifiedDate;
 }
