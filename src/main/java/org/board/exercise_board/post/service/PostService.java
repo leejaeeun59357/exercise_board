@@ -1,6 +1,7 @@
 package org.board.exercise_board.post.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.liked.service.FindByType;
@@ -65,8 +66,17 @@ public class PostService implements FindByType<Post> {
         .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
   }
 
-  public String deletePost(Post post) {
+  @Transactional
+  public String deletePost(String writerId, Long postId) {
+    Post post = this.find(postId);
+
+    // 로그인한 사용자가 작성자인지 확인
+    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
+      throw new PostCustomException(PostErrorCode.NOT_HAVE_RIGHT);
+    }
+
     postRepository.delete(post);
+
     return "게시물 삭제가 완료되었습니다.";
   }
 

@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.post.application.ModifyApplication;
 import org.board.exercise_board.post.application.ReadApplication;
-import org.board.exercise_board.post.application.DeleteApplication;
 import org.board.exercise_board.post.application.SearchApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/post")
 public class PostController {
 
-  private final DeleteApplication deleteApplication;
   private final ReadApplication readApplication;
   private final ModifyApplication modifyApplication;
   private final SearchApplication searchApplication;
@@ -58,7 +56,7 @@ public class PostController {
       @AuthenticationPrincipal User user,
       @RequestParam Long postId
   ) {
-    return deleteApplication.deletePost(user.getUsername(), postId);
+    return postService.deletePost(user.getUsername(), postId);
   }
 
   @Operation(summary = "게시글 10개씩 조회")
