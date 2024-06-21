@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.post.application.ModifyApplication;
-import org.board.exercise_board.post.application.ReadApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
@@ -33,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/post")
 public class PostController {
 
-  private final ReadApplication readApplication;
+//  private final ReadApplication readApplication;
   private final ModifyApplication modifyApplication;
   private final PostService postService;
 
@@ -62,7 +61,7 @@ public class PostController {
   public ResponseEntity<Page<Post>> readAllPost(
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
-    return ResponseEntity.ok(readApplication.readAllPosts(pageable));
+    return ResponseEntity.ok(postService.readAllPosts(pageable));
   }
 
   @Operation(summary = "게시글 1개 조회")
@@ -70,7 +69,7 @@ public class PostController {
   public ResponseEntity<PostOneDto> readOnePost(
       @PathVariable(value = "postId") Long postId
   ) {
-    return ResponseEntity.ok(readApplication.readOnePost(postId));
+    return ResponseEntity.ok(postService.readOnePost(postId));
   }
 
   @Operation(summary = "게시글 수정")

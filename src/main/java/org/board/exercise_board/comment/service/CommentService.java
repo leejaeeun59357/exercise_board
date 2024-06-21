@@ -39,17 +39,7 @@ public class CommentService implements FindByType<Comment> {
     return CommentDto.entityToDto(commentRepository.save(comment));
   }
 
-  /**
-   * 해당 게시물에 작성된 댓글 리스트 반환
-   *
-   * @param post
-   * @return
-   */
-  public List<CommentDto> findComments(Post post) {
-    return commentRepository.findAllByPost(post).stream()
-        .map(CommentDto::entityToDto)
-        .collect(Collectors.toList());
-  }
+
 
   /**
    * 해당 게시물 내에 댓글이 존재하는지 확인

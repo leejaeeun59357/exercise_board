@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.comment.domain.dto.CommentDto;
+import org.board.exercise_board.comment.domain.repository.CommentRepository;
+import org.board.exercise_board.comment.service.CommentService;
 import org.board.exercise_board.liked.service.FindByType;
 import org.board.exercise_board.post.domain.Dto.PostDto;
+import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
 import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.post.domain.model.Post;
@@ -25,9 +29,9 @@ public class PostService implements FindByType<Post> {
 
   private final PostRepository postRepository;
   private final UserService userService;
+  private final CommentRepository commentRepository;
 
 
-  @Transactional
   public PostDto writePost(WriteForm writeForm, String writerId) {
     // 제목이나 내용이 null값인지 검사
     if (writeForm.getSubject() == null || writeForm.getSubject().isEmpty()) {
@@ -52,15 +56,12 @@ public class PostService implements FindByType<Post> {
   }
 
 
-
-
   @Override
   public Post find(Long postId) {
     return postRepository.findById(postId)
         .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
   }
 
-  @Transactional
   public String deletePost(String writerId, Long postId) {
     Post post = this.find(postId);
 
@@ -75,24 +76,21 @@ public class PostService implements FindByType<Post> {
   }
 
 
-
-  /**
-   * 최근 날짜 순으로 모든 게시물 조회(Entity -> DTO)
-   *
-   * @return
-   */
-  @Transactional(readOnly = true)
   public Page<Post> readAllPosts(Pageable pageable) {
     return postRepository.findAll(pageable);
   }
 
+  public PostOneDto readOnePost(Long postId) {
+    Post post = this.find(postId);
 
-  /**
-   * 입력받은 form대로 게시글 수정
-   * @param post
-   * @param modifyForm
-   * @return
-   */
+    List<CommentDto> comments = commentRepository.findAllByPost(post)
+            .stream().map(CommentDto::entityToDto)
+            .collect(Collectors.toList());
+
+    return PostOneDto.entityToDto(post, comments);
+  }
+
+
   public PostDto modifyPost(Post post, ModifyForm modifyForm) {
     post.setSubject(modifyForm.getAfterSubject());
     post.setContent(modifyForm.getContent());
