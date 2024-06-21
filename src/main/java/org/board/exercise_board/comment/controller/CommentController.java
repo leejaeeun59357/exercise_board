@@ -3,7 +3,6 @@ package org.board.exercise_board.comment.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.board.exercise_board.comment.application.CommentDeleteApplication;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
 import org.board.exercise_board.comment.service.CommentService;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/comment")
 public class CommentController {
 
-  private final CommentDeleteApplication commentDeleteApplication;
   private final CommentService commentService;
 
   @Operation(summary = "댓글 작성")
@@ -59,7 +57,7 @@ public class CommentController {
       @PathVariable(value = "commentId") Long commentId,
       @AuthenticationPrincipal User user
   ) {
-    return ResponseEntity.ok(commentDeleteApplication.deleteComment(
+    return ResponseEntity.ok(commentService.deleteComment(
         postId, commentId, user.getUsername()));
   }
 }

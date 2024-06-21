@@ -77,9 +77,18 @@ public class CommentService implements FindByType<Comment> {
   }
 
 
-  public String deleteComment(Comment comment) {
-    commentRepository.delete(comment);
-    return "삭제가 완료되었습니다.";
+  public String deleteComment(Long postId, Long commentId, String userId) {
+    Post post = this.findPost(postId);
+    Comment comment = this.findCommentInPost(post, commentId);
+
+    // 게시글 작성자이거나, 댓글 작성자만 삭제 가능
+    if (Objects.equals(userId, comment.getUser().getLoginId()) ||
+            Objects.equals(userId, post.getUser().getLoginId())) {
+      commentRepository.delete(comment);
+      return "삭제가 완료되었습니다.";
+    } else {
+      throw new CommentCustomException(WRITER_ONLY);
+    }
   }
 
   @Override
