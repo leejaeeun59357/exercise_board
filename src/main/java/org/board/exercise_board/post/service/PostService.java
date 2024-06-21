@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -91,9 +92,28 @@ public class PostService implements FindByType<Post> {
   }
 
 
-  public PostDto modifyPost(Post post, ModifyForm modifyForm) {
+  public PostDto modifyPost(Long postId,ModifyForm modifyForm, String writerId) {
+    // 변경 후 제목 null 일 때,
+    if (ObjectUtils.isEmpty(modifyForm.getAfterSubject())) {
+      throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
+    }
+
+    // 내용 null 일 때,
+    if (ObjectUtils.isEmpty(modifyForm.getContent())) {
+      throw new PostCustomException(PostErrorCode.CONTENT_IS_EMPTY);
+    }
+
+    // 해당 제목의 게시물 찾기
+    Post post = this.find(postId);
+
+    // 수정하려는 사람과 작성자가 동일 인물인지 확인
+    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
+      throw new PostCustomException(PostErrorCode.NOT_HAVE_RIGHT);
+    }
+
     post.setSubject(modifyForm.getAfterSubject());
     post.setContent(modifyForm.getContent());
+
     return PostDto.entityToDto(postRepository.save(post));
   }
 

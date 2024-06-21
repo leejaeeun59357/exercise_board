@@ -3,7 +3,6 @@ package org.board.exercise_board.post.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.board.exercise_board.post.application.ModifyApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
@@ -32,8 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/post")
 public class PostController {
 
-//  private final ReadApplication readApplication;
-  private final ModifyApplication modifyApplication;
   private final PostService postService;
 
   @Operation(summary = "게시글 작성")
@@ -80,7 +77,7 @@ public class PostController {
       @RequestBody ModifyForm modifyForm
   ) {
     return ResponseEntity.ok(
-        modifyApplication.modifyPost(postId,modifyForm, user.getUsername()));
+        postService.modifyPost(postId,modifyForm, user.getUsername()));
   }
 
 
