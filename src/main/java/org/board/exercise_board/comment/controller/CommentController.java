@@ -5,9 +5,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.comment.application.CommentDeleteApplication;
 import org.board.exercise_board.comment.application.CommentModifyApplication;
-import org.board.exercise_board.comment.application.CommentWriteApplication;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
+import org.board.exercise_board.comment.service.CommentService;
 import org.board.exercise_board.user.domain.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/comment")
 public class CommentController {
 
-  private final CommentWriteApplication commentWriteApplication;
   private final CommentModifyApplication commentModifyApplication;
   private final CommentDeleteApplication commentDeleteApplication;
+  private final CommentService commentService;
 
   @Operation(summary = "댓글 작성")
   @PostMapping("/{postId}/write")
@@ -36,7 +36,7 @@ public class CommentController {
       @RequestBody @Valid CommentForm commentForm
   ) {
     return ResponseEntity.ok(
-        commentWriteApplication.saveComment(commentForm, postId,
+        commentService.saveComment(commentForm, postId,
             user.getUsername()));
   }
 

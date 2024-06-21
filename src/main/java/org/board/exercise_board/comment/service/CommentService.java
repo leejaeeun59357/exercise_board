@@ -25,9 +25,12 @@ public class CommentService implements FindByType<Comment> {
   private final CommentRepository commentRepository;
   private final PostService postService;
   private final UserService userService;
+  private final NotificationService notificationService;
 
   @Transactional
   public CommentDto saveComment(CommentForm commentForm, Long postId, String writerId) {
+    notificationService.notifyComment(postId,writerId);
+
     Post post = postService.find(postId);
     User user = userService.findUser(writerId);
 
