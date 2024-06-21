@@ -1,12 +1,6 @@
 package org.board.exercise_board.user.domain.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,10 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
 import org.hibernate.envers.AuditOverride;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -26,8 +24,8 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 @Getter
-@AuditOverride(forClass = BaseEntity.class)
-public class User extends BaseEntity implements UserDetails {
+@EntityListeners(AuditingEntityListener.class)
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +46,12 @@ public class User extends BaseEntity implements UserDetails {
 
   @Setter
   private Boolean verifiedStatus;
+
+  @CreatedDate
+  private LocalDateTime createdDate;
+
+  @LastModifiedDate
+  private LocalDateTime modifiedDate;
 
   /**
    * 입력받은 form을 저장하기 위해 entity로 형태 변환

@@ -1,9 +1,9 @@
 package org.board.exercise_board.comment.service;
 
 import static org.board.exercise_board.comment.exception.CommentErrorCode.NOT_FOUND_COMMENT;
+import static org.board.exercise_board.comment.exception.CommentErrorCode.WRITER_ONLY;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
@@ -12,7 +12,9 @@ import org.board.exercise_board.comment.domain.repository.CommentRepository;
 import org.board.exercise_board.comment.exception.CommentCustomException;
 import org.board.exercise_board.liked.service.FindByType;
 import org.board.exercise_board.post.domain.model.Post;
-import org.board.exercise_board.post.service.PostService;
+import org.board.exercise_board.post.domain.repository.PostRepository;
+import org.board.exercise_board.post.exception.PostCustomException;
+import org.board.exercise_board.post.exception.PostErrorCode;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.service.UserService;
 import org.springframework.stereotype.Service;
@@ -23,12 +25,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService implements FindByType<Comment> {
 
   private final CommentRepository commentRepository;
-  private final PostService postService;
+  private final PostRepository postRepository;
   private final UserService userService;
+  private final NotificationService notificationService;
 
   @Transactional
   public CommentDto saveComment(CommentForm commentForm, Long postId, String writerId) {
-    Post post = postService.find(postId);
+    notificationService.notifyComment(postId,writerId);
+
+    Post post = this.findPost(postId);
     User user = userService.findUser(writerId);
 
     Comment comment = Comment.formToEntity(commentForm);
@@ -39,17 +44,11 @@ public class CommentService implements FindByType<Comment> {
     return CommentDto.entityToDto(commentRepository.save(comment));
   }
 
-  /**
-   * 해당 게시물에 작성된 댓글 리스트 반환
-   *
-   * @param post
-   * @return
-   */
-  public List<CommentDto> findComments(Post post) {
-    return commentRepository.findAllByPost(post).stream()
-        .map(CommentDto::entityToDto)
-        .collect(Collectors.toList());
+  public Post findPost(Long postId) {
+    return postRepository.findById(postId)
+            .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
   }
+
 
   /**
    * 해당 게시물 내에 댓글이 존재하는지 확인
@@ -62,22 +61,34 @@ public class CommentService implements FindByType<Comment> {
         .orElseThrow(() -> new CommentCustomException(NOT_FOUND_COMMENT));
   }
 
-  public CommentDto modifyComment(Comment comment, CommentForm commentForm) {
+  public CommentDto modifyComment(
+          CommentForm commentForm, String loginId, Long postId, Long commentId
+  ) {
+    Post post = this.findPost(postId);
+    Comment comment = this.findCommentInPost(post, commentId);
+
+    if(!Objects.equals(comment.getUser().getLoginId(), loginId)) {
+      throw new CommentCustomException(WRITER_ONLY);
+    }
+
     comment.setContent(commentForm.getContent());
+
     return CommentDto.entityToDto(commentRepository.save(comment));
   }
 
 
+  public String deleteComment(Long postId, Long commentId, String userId) {
+    Post post = this.findPost(postId);
+    Comment comment = this.findCommentInPost(post, commentId);
 
-  /**
-   * 해당 댓글 삭제하는 메서드
-   *
-   * @param comment
-   * @return
-   */
-  public String deleteComment(Comment comment) {
-    commentRepository.delete(comment);
-    return "삭제가 완료되었습니다.";
+    // 게시글 작성자이거나, 댓글 작성자만 삭제 가능
+    if (Objects.equals(userId, comment.getUser().getLoginId()) ||
+            Objects.equals(userId, post.getUser().getLoginId())) {
+      commentRepository.delete(comment);
+      return "삭제가 완료되었습니다.";
+    } else {
+      throw new CommentCustomException(WRITER_ONLY);
+    }
   }
 
   @Override

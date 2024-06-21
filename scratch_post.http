@@ -1,7 +1,0 @@
-### 전체 게시글 조회
-GET http://localhost:8080/post/read
-Content-Type: application/json
-
-### 게시글 제목 검색
-GET http://localhost:8080/post/search?keyword=제목
-Content-Type: application/json

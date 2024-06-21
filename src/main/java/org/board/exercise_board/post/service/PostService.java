@@ -1,10 +1,15 @@
 package org.board.exercise_board.post.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.comment.domain.dto.CommentDto;
+import org.board.exercise_board.comment.domain.repository.CommentRepository;
+import org.board.exercise_board.comment.service.CommentService;
 import org.board.exercise_board.liked.service.FindByType;
 import org.board.exercise_board.post.domain.Dto.PostDto;
+import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
 import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.post.domain.model.Post;
@@ -17,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -24,16 +30,25 @@ public class PostService implements FindByType<Post> {
 
   private final PostRepository postRepository;
   private final UserService userService;
+  private final CommentRepository commentRepository;
 
-  /**
-   * 해당 사용자 정보와 입력 받은 Post 제목, 내용을 함께 DB에 저장
-   *
-   * @param writeForm
-   * @param writerId
-   * @return
-   */
-  public PostDto savePost(WriteForm writeForm, String writerId) {
+
+  public PostDto writePost(WriteForm writeForm, String writerId) {
+    // 제목이나 내용이 null값인지 검사
+    if (writeForm.getSubject() == null || writeForm.getSubject().isEmpty()) {
+      throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
+    }
+
+    if (writeForm.getContent() == null || writeForm.getContent().isEmpty()) {
+      throw new PostCustomException(PostErrorCode.CONTENT_IS_EMPTY);
+    }
+
     User user = userService.findUser(writerId);
+
+    // 이메일 인증이 완료되었는지 검사
+    if (!user.getVerifiedStatus()) {
+      throw new PostCustomException(PostErrorCode.NOT_VERIFIED_EMAIL);
+    }
 
     Post post = Post.formToEntity(writeForm);
     post.setUser(user);
@@ -42,41 +57,63 @@ public class PostService implements FindByType<Post> {
   }
 
 
-
-
   @Override
   public Post find(Long postId) {
     return postRepository.findById(postId)
         .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
   }
 
-  public String deletePost(Post post) {
+  public String deletePost(String writerId, Long postId) {
+    Post post = this.find(postId);
+
+    // 로그인한 사용자가 작성자인지 확인
+    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
+      throw new PostCustomException(PostErrorCode.NOT_HAVE_RIGHT);
+    }
+
     postRepository.delete(post);
+
     return "게시물 삭제가 완료되었습니다.";
   }
 
 
-
-  /**
-   * 최근 날짜 순으로 모든 게시물 조회(Entity -> DTO)
-   *
-   * @return
-   */
-  @Transactional(readOnly = true)
   public Page<Post> readAllPosts(Pageable pageable) {
     return postRepository.findAll(pageable);
   }
 
+  public PostOneDto readOnePost(Long postId) {
+    Post post = this.find(postId);
 
-  /**
-   * 입력받은 form대로 게시글 수정
-   * @param post
-   * @param modifyForm
-   * @return
-   */
-  public PostDto modifyPost(Post post, ModifyForm modifyForm) {
+    List<CommentDto> comments = commentRepository.findAllByPost(post)
+            .stream().map(CommentDto::entityToDto)
+            .collect(Collectors.toList());
+
+    return PostOneDto.entityToDto(post, comments);
+  }
+
+
+  public PostDto modifyPost(Long postId,ModifyForm modifyForm, String writerId) {
+    // 변경 후 제목 null 일 때,
+    if (ObjectUtils.isEmpty(modifyForm.getAfterSubject())) {
+      throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
+    }
+
+    // 내용 null 일 때,
+    if (ObjectUtils.isEmpty(modifyForm.getContent())) {
+      throw new PostCustomException(PostErrorCode.CONTENT_IS_EMPTY);
+    }
+
+    // 해당 제목의 게시물 찾기
+    Post post = this.find(postId);
+
+    // 수정하려는 사람과 작성자가 동일 인물인지 확인
+    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
+      throw new PostCustomException(PostErrorCode.NOT_HAVE_RIGHT);
+    }
+
     post.setSubject(modifyForm.getAfterSubject());
     post.setContent(modifyForm.getContent());
+
     return PostDto.entityToDto(postRepository.save(post));
   }
 
@@ -88,6 +125,10 @@ public class PostService implements FindByType<Post> {
    */
   @Transactional
   public List<PostDto> searchPost(String keyword, Pageable pageable) {
+    // 검색 키워드가 null 일 때
+    if(Objects.equals(keyword, "") || keyword == null) {
+      throw new PostCustomException(PostErrorCode.KEYWORD_IS_EMPTY);
+    }
 
     return postRepository.findBySubjectContaining(keyword,pageable)
         .stream().map(PostDto::entityToDto)

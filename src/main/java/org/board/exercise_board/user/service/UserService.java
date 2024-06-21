@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.board.exercise_board.post.exception.PostCustomException;
 import org.board.exercise_board.post.exception.PostErrorCode;
 import org.board.exercise_board.user.Security.JwtTokenProvider;
+import org.board.exercise_board.user.domain.Dto.UserDto;
+import org.board.exercise_board.user.domain.Form.SignInForm;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
 import org.board.exercise_board.user.domain.model.JwtToken;
+import org.board.exercise_board.user.domain.model.EmailToken;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.domain.repository.UserRepository;
 import org.board.exercise_board.user.exception.CustomException;
@@ -29,30 +32,38 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
+  private final EmailService emailService;
+//  private final NotificationService notificationService;
+
 
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-  public boolean isExistEmail(String email) {
-    return userRepository.existsByEmail(email);
-  }
+  public UserDto signUp(SignUpForm signUpForm) {
 
+    if(userRepository.existsByLoginId(signUpForm.getLoginId())) {
+      throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
+    }
+    if(this.userRepository.existsByEmail(signUpForm.getEmail())) {
+      throw new CustomException(ErrorCode.ALREATY_REGISTERD_EMAIL);
+    }
 
-  public boolean isExistLoginId(String loginId) {
-    return userRepository.findByLoginId(loginId).isPresent();
-  }
-
-
-  public User signUp(SignUpForm signUpForm) {
+    // TODO - User Entity setter 어노테이션 삭제 예정 따라서 수정 필요함
     User user = User.formToEntity(signUpForm);
     user.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
-    return userRepository.save(user);
+    userRepository.save(user);
+
+    EmailToken emailToken = emailService.createEmailToken(user);
+    emailService.sendEmail(signUpForm.getEmail(), emailToken);
+
+    return UserDto.entityToDto(user);
   }
 
-  public JwtToken signin(String loginId, String password) {
+  public JwtToken signin(SignInForm signInForm) {
     // 1. token 생성
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-        loginId, password);
+    UsernamePasswordAuthenticationToken authenticationToken =
+            new UsernamePasswordAuthenticationToken(
+        signInForm.getLoginId(), signInForm.getPassword());
 
     // 2. 해당 token을 이용하여 인증 절차 거친다.
     Authentication authentication = authenticationManagerBuilder.getObject()
@@ -62,9 +73,29 @@ public class UserService implements UserDetailsService {
     // 따라서 token을 발행한다.
     JwtToken token = jwtTokenProvider.createToken(authentication);
 
+    // TODO - 로그인이 되자마자 SSE 연결하는 메서드 필요함
+//    notificationService.subscribe(signInForm.getLoginId());
+
     return token;
   }
 
+  public void verifyEmail(String tokenId) {
+
+    EmailToken emailToken = emailService.findToken(tokenId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+    // 이미 인증완료되었다면 Exception 발생
+    if(emailToken.getUser().getVerifiedStatus()) {
+      throw new CustomException(ErrorCode.ALREADY_VERIFIED);
+    }
+
+    // 만료 시간이 지났다면 Exception 발생
+    if(emailService.verifyExpirationDate(emailToken)) {
+      emailService.updateVerifyStatus(emailToken);
+    } else {
+      throw new CustomException(ErrorCode.EXPIRATION_TIME_IS_OVER);
+    }
+  }
 
   public boolean isEmailVerified(String writerId) {
     User user = userRepository.findByLoginId(writerId)
