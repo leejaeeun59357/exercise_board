@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.comment.application.CommentDeleteApplication;
-import org.board.exercise_board.comment.application.CommentModifyApplication;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
 import org.board.exercise_board.comment.service.CommentService;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/comment")
 public class CommentController {
 
-  private final CommentModifyApplication commentModifyApplication;
   private final CommentDeleteApplication commentDeleteApplication;
   private final CommentService commentService;
 
@@ -49,7 +47,7 @@ public class CommentController {
       @RequestBody @Valid CommentForm commentForm
   ) {
     return ResponseEntity.ok(
-        commentModifyApplication.modifyComment(commentForm, user.getUsername(), postId,
+        commentService.modifyComment(commentForm, user.getUsername(), postId,
             commentId)
     );
   }
