@@ -1,7 +1,5 @@
 package org.board.exercise_board.comment.service;
 
-import static org.board.exercise_board.comment.exception.CommentErrorCode.NOT_FOUND_COMMENT;
-import static org.board.exercise_board.comment.exception.CommentErrorCode.WRITER_ONLY;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +7,11 @@ import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
 import org.board.exercise_board.comment.domain.model.Comment;
 import org.board.exercise_board.comment.domain.repository.CommentRepository;
-import org.board.exercise_board.comment.exception.CommentCustomException;
+import org.board.exercise_board.exception.CustomException;
+import org.board.exercise_board.exception.ErrorCode;
 import org.board.exercise_board.liked.service.FindByType;
 import org.board.exercise_board.post.domain.model.Post;
 import org.board.exercise_board.post.domain.repository.PostRepository;
-import org.board.exercise_board.post.exception.PostCustomException;
-import org.board.exercise_board.post.exception.PostErrorCode;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.service.UserService;
 import org.springframework.stereotype.Service;
@@ -46,7 +43,7 @@ public class CommentService implements FindByType<Comment> {
 
   public Post findPost(Long postId) {
     return postRepository.findById(postId)
-            .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
+            .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
   }
 
 
@@ -58,7 +55,7 @@ public class CommentService implements FindByType<Comment> {
    */
   public Comment findCommentInPost(Post post, Long commentId) {
     return commentRepository.findByIdAndPost(commentId, post)
-        .orElseThrow(() -> new CommentCustomException(NOT_FOUND_COMMENT));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMENT));
   }
 
   public CommentDto modifyComment(
@@ -68,7 +65,7 @@ public class CommentService implements FindByType<Comment> {
     Comment comment = this.findCommentInPost(post, commentId);
 
     if(!Objects.equals(comment.getUser().getLoginId(), loginId)) {
-      throw new CommentCustomException(WRITER_ONLY);
+      throw new CustomException(ErrorCode.WRITER_ONLY);
     }
 
     comment.setContent(commentForm.getContent());
@@ -87,13 +84,13 @@ public class CommentService implements FindByType<Comment> {
       commentRepository.delete(comment);
       return "삭제가 완료되었습니다.";
     } else {
-      throw new CommentCustomException(WRITER_ONLY);
+      throw new CustomException(ErrorCode.WRITER_ONLY);
     }
   }
 
   @Override
   public Comment find(Long commentId) {
     return commentRepository.findById(commentId)
-        .orElseThrow(() -> new CommentCustomException(NOT_FOUND_COMMENT));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMENT));
   }
 }

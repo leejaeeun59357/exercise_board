@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.repository.CommentRepository;
-import org.board.exercise_board.comment.service.CommentService;
+import org.board.exercise_board.exception.CustomException;
+import org.board.exercise_board.exception.ErrorCode;
 import org.board.exercise_board.liked.service.FindByType;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
@@ -14,8 +15,6 @@ import org.board.exercise_board.post.domain.form.ModifyForm;
 import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.post.domain.model.Post;
 import org.board.exercise_board.post.domain.repository.PostRepository;
-import org.board.exercise_board.post.exception.PostCustomException;
-import org.board.exercise_board.post.exception.PostErrorCode;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.service.UserService;
 import org.springframework.data.domain.Page;
@@ -36,18 +35,18 @@ public class PostService implements FindByType<Post> {
   public PostDto writePost(WriteForm writeForm, String writerId) {
     // 제목이나 내용이 null값인지 검사
     if (writeForm.getSubject() == null || writeForm.getSubject().isEmpty()) {
-      throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
+      throw new CustomException(ErrorCode.SUBJECT_IS_EMPTY);
     }
 
     if (writeForm.getContent() == null || writeForm.getContent().isEmpty()) {
-      throw new PostCustomException(PostErrorCode.CONTENT_IS_EMPTY);
+      throw new CustomException(ErrorCode.CONTENT_IS_EMPTY);
     }
 
     User user = userService.findUser(writerId);
 
     // 이메일 인증이 완료되었는지 검사
     if (!user.getVerifiedStatus()) {
-      throw new PostCustomException(PostErrorCode.NOT_VERIFIED_EMAIL);
+      throw new CustomException(ErrorCode.NOT_VERIFIED_EMAIL);
     }
 
     Post post = Post.formToEntity(writeForm);
@@ -60,7 +59,7 @@ public class PostService implements FindByType<Post> {
   @Override
   public Post find(Long postId) {
     return postRepository.findById(postId)
-        .orElseThrow(() -> new PostCustomException(PostErrorCode.POST_IS_NOT_EXIST));
+        .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
   }
 
   public String deletePost(String writerId, Long postId) {
@@ -68,7 +67,7 @@ public class PostService implements FindByType<Post> {
 
     // 로그인한 사용자가 작성자인지 확인
     if(!Objects.equals(writerId, post.getUser().getLoginId())) {
-      throw new PostCustomException(PostErrorCode.NOT_HAVE_RIGHT);
+      throw new CustomException(ErrorCode.NOT_HAVE_RIGHT);
     }
 
     postRepository.delete(post);
@@ -95,12 +94,12 @@ public class PostService implements FindByType<Post> {
   public PostDto modifyPost(Long postId,ModifyForm modifyForm, String writerId) {
     // 변경 후 제목 null 일 때,
     if (ObjectUtils.isEmpty(modifyForm.getAfterSubject())) {
-      throw new PostCustomException(PostErrorCode.SUBJECT_IS_EMPTY);
+      throw new CustomException(ErrorCode.SUBJECT_IS_EMPTY);
     }
 
     // 내용 null 일 때,
     if (ObjectUtils.isEmpty(modifyForm.getContent())) {
-      throw new PostCustomException(PostErrorCode.CONTENT_IS_EMPTY);
+      throw new CustomException(ErrorCode.CONTENT_IS_EMPTY);
     }
 
     // 해당 제목의 게시물 찾기
@@ -108,7 +107,7 @@ public class PostService implements FindByType<Post> {
 
     // 수정하려는 사람과 작성자가 동일 인물인지 확인
     if(!Objects.equals(writerId, post.getUser().getLoginId())) {
-      throw new PostCustomException(PostErrorCode.NOT_HAVE_RIGHT);
+      throw new CustomException(ErrorCode.NOT_HAVE_RIGHT);
     }
 
     post.setSubject(modifyForm.getAfterSubject());
@@ -127,7 +126,7 @@ public class PostService implements FindByType<Post> {
   public List<PostDto> searchPost(String keyword, Pageable pageable) {
     // 검색 키워드가 null 일 때
     if(Objects.equals(keyword, "") || keyword == null) {
-      throw new PostCustomException(PostErrorCode.KEYWORD_IS_EMPTY);
+      throw new CustomException(ErrorCode.KEYWORD_IS_EMPTY);
     }
 
     return postRepository.findBySubjectContaining(keyword,pageable)
