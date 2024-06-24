@@ -2,8 +2,6 @@ package org.board.exercise_board.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.board.exercise_board.post.exception.PostCustomException;
-import org.board.exercise_board.post.exception.PostErrorCode;
 import org.board.exercise_board.user.Security.JwtTokenProvider;
 import org.board.exercise_board.user.domain.Dto.UserDto;
 import org.board.exercise_board.user.domain.Form.SignInForm;
@@ -12,8 +10,8 @@ import org.board.exercise_board.user.domain.model.JwtToken;
 import org.board.exercise_board.user.domain.model.EmailToken;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.domain.repository.UserRepository;
-import org.board.exercise_board.user.exception.CustomException;
-import org.board.exercise_board.user.exception.ErrorCode;
+import org.board.exercise_board.exception.CustomException;
+import org.board.exercise_board.exception.ErrorCode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -45,7 +43,7 @@ public class UserService implements UserDetailsService {
       throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
     }
     if(this.userRepository.existsByEmail(signUpForm.getEmail())) {
-      throw new CustomException(ErrorCode.ALREATY_REGISTERD_EMAIL);
+      throw new CustomException(ErrorCode.ALREADY_REGISTERD_EMAIL);
     }
 
     // TODO - User Entity setter 어노테이션 삭제 예정 따라서 수정 필요함
@@ -99,7 +97,7 @@ public class UserService implements UserDetailsService {
 
   public boolean isEmailVerified(String writerId) {
     User user = userRepository.findByLoginId(writerId)
-        .orElseThrow(() -> new PostCustomException(PostErrorCode.NOT_FOUND_USER));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     return user.getVerifiedStatus();
   }
 
@@ -111,7 +109,7 @@ public class UserService implements UserDetailsService {
    */
   public User findUser(String writerId) {
     User user = userRepository.findByLoginId(writerId)
-        .orElseThrow(() -> new PostCustomException(PostErrorCode.NOT_FOUND_USER));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
     return user;
   }
