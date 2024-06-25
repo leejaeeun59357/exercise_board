@@ -38,10 +38,11 @@ public class CommentService {
       throw new CustomException(ErrorCode.NOT_VERIFIED_EMAIL);
     }
 
-    Comment comment = Comment.formToEntity(commentForm);
-
-    comment.setPost(post);
-    comment.setUser(user);
+    Comment comment = Comment.builder()
+            .content(commentForm.getContent())
+            .post(post)
+            .user(user)
+            .build();
 
     return CommentDto.entityToDto(commentRepository.save(comment));
   }
@@ -73,7 +74,7 @@ public class CommentService {
       throw new CustomException(ErrorCode.WRITER_ONLY);
     }
 
-    comment.setContent(commentForm.getContent());
+    comment.editContent(commentForm.getContent());
 
     return CommentDto.entityToDto(commentRepository.save(comment));
   }
