@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.user.domain.model.User;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,17 +26,14 @@ public class Post {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Setter
   private String subject;
 
   @Type(JsonType.class)
   @Column(name = "CONTENT", columnDefinition = "longtext")
-  @Setter
   private Map<String, Object> content;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
-  @Setter
   private User user;
 
   @CreatedDate
@@ -47,10 +42,10 @@ public class Post {
   @LastModifiedDate
   private LocalDateTime modifiedDate;
 
-  public static Post formToEntity(WriteForm writeForm) {
-    return Post.builder()
-        .subject(writeForm.getSubject())
-        .content(writeForm.getContent())
-        .build();
+  public void editSubjectAndContent(
+          String afterSubject, Map<String, Object> content
+  ) {
+    this.subject = afterSubject;
+    this.content = content;
   }
 }
