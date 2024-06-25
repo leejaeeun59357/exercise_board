@@ -46,9 +46,9 @@ public class UserService implements UserDetailsService {
       throw new CustomException(ErrorCode.ALREADY_REGISTERD_EMAIL);
     }
 
-    // TODO - User Entity setter 어노테이션 삭제 예정 따라서 수정 필요함
-    User user = User.formToEntity(signUpForm);
-    user.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
+    String encodePassword = passwordEncoder.encode(signUpForm.getPassword());
+    User user = User.formToEntity(signUpForm, encodePassword);
+
     userRepository.save(user);
 
     EmailToken emailToken = emailService.createEmailToken(user);
@@ -88,7 +88,7 @@ public class UserService implements UserDetailsService {
     }
 
     // 만료 시간이 지났다면 Exception 발생
-    if(emailService.verifyExpirationDate(emailToken)) {
+    if(emailService.verifyExpirationDateTime(emailToken)) {
       emailService.updateVerifyStatus(emailToken);
     } else {
       throw new CustomException(ErrorCode.EXPIRATION_TIME_IS_OVER);
