@@ -1,4 +1,4 @@
-package org.board.exercise_board.comment.service;
+package org.board.exercise_board.notification.service;
 
 import java.io.IOException;
 import java.util.HashMap;
