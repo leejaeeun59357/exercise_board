@@ -59,7 +59,7 @@ public class EmailService {
       emailToken = new EmailToken();
       emailToken.setUser(user);
     }
-    emailToken.setExpirationDateTime(LocalDateTime.now().plusMinutes(
+    emailToken.setExpirationTime(LocalDateTime.now().plusMinutes(
             EMAIL_TOKNE_EXPIRATION_MINUTE_TIME_VALUE));
     return emailTokenRepository.save(emailToken);
   }
