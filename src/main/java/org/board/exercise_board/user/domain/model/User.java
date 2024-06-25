@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
-import org.hibernate.envers.AuditOverride;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,7 +33,6 @@ public class User implements UserDetails {
   @Column(unique = true)
   private String loginId;
 
-  @Setter
   private String password;
 
   @Column(unique = true)
@@ -44,7 +41,6 @@ public class User implements UserDetails {
   @Enumerated(EnumType.STRING)
   private Role role;
 
-  @Setter
   private Boolean verifiedStatus;
 
   @CreatedDate
@@ -59,14 +55,18 @@ public class User implements UserDetails {
    * @param signUpForm
    * @return
    */
-  public static User formToEntity(SignUpForm signUpForm) {
+  public static User formToEntity(SignUpForm signUpForm, String encodedPassword) {
     return User.builder()
         .loginId(signUpForm.getLoginId())
         .email(signUpForm.getEmail())
-        .password(signUpForm.getPassword())
+        .password(encodedPassword)
         .verifiedStatus(false)
         .role(Role.USER)
         .build();
+  }
+
+  public void verifiedEmail() {
+    this.verifiedStatus = true;
   }
 
   @Override

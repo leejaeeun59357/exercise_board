@@ -48,8 +48,11 @@ public class PostService {
       throw new CustomException(ErrorCode.NOT_VERIFIED_EMAIL);
     }
 
-    Post post = Post.formToEntity(writeForm);
-    post.setUser(user);
+    Post post = Post.builder()
+            .subject(writeForm.getSubject())
+            .content(writeForm.getContent())
+            .user(user)
+            .build();
 
     return PostDto.entityToDto(postRepository.save(post));
   }
@@ -109,8 +112,7 @@ public class PostService {
       throw new CustomException(ErrorCode.NOT_HAVE_RIGHT);
     }
 
-    post.setSubject(modifyForm.getAfterSubject());
-    post.setContent(modifyForm.getContent());
+    post.editSubjectAndContent(modifyForm.getAfterSubject(), modifyForm.getContent());
 
     return PostDto.entityToDto(postRepository.save(post));
   }

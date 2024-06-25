@@ -30,10 +30,8 @@ public class EmailToken {
 
   @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id")
-  @Setter
   private User user;
 
-  @Setter
   private LocalDateTime expirationDateTime;
 
   @CreatedDate
@@ -41,4 +39,10 @@ public class EmailToken {
 
   @LastModifiedDate
   private LocalDateTime modifiedDate;
+
+  public void setExpirationTime(LocalDateTime expirationDateTime) {
+    this.expirationDateTime = expirationDateTime;
+  }
+
+  public void setUser(User user) { this.user = user; }
 }

@@ -59,7 +59,7 @@ public class EmailService {
       emailToken = new EmailToken();
       emailToken.setUser(user);
     }
-    emailToken.setExpirationDateTime(LocalDateTime.now().plusMinutes(
+    emailToken.setExpirationTime(LocalDateTime.now().plusMinutes(
             EMAIL_TOKNE_EXPIRATION_MINUTE_TIME_VALUE));
     return emailTokenRepository.save(emailToken);
   }
@@ -69,24 +69,16 @@ public class EmailService {
     return emailTokenRepository.findById(tokenId);
   }
 
-  /**
-   * 현재 시간이 만료시간을 지났는지 검사
-   *
-   * @param emailToken
-   * @return
-   */
-  public boolean verifyExpirationDate(EmailToken emailToken) {
+
+  public boolean verifyExpirationDateTime(EmailToken emailToken) {
     // 현재 시간이 만료시간을 지나지 않았을 때 true
     return !LocalDateTime.now().isAfter(emailToken.getExpirationDateTime());
   }
 
-  /**
-   * 인증링크를 통해 사용자 인증이 되면 user의 verified_Status를 true로 변경
-   *
-   * @param emailToken
-   */
+
   public void updateVerifyStatus(EmailToken emailToken) {
-    emailToken.getUser().setVerifiedStatus(true);
+    User user = emailToken.getUser();
+    user.verifiedEmail();
     emailTokenRepository.save(emailToken);
   }
 }
