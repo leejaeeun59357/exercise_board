@@ -6,7 +6,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.board.exercise_board.exception.CustomException;
+import org.board.exercise_board.exception.ErrorCode;
 import org.board.exercise_board.post.domain.model.Post;
+import org.board.exercise_board.post.domain.repository.PostRepository;
 import org.board.exercise_board.post.service.PostService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 public class NotificationService {
 
-  private final PostService postService;
+  private final PostRepository postRepository;
   public Map<String, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
   /**
@@ -60,7 +63,8 @@ public class NotificationService {
    */
   @Async
   public void notifyComment(Long postId, String commentWriter) {
-    Post post = postService.find(postId);
+    Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
 
     String postWriter = post.getUser().getLoginId();
 

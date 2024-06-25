@@ -95,24 +95,7 @@ public class UserService implements UserDetailsService {
     }
   }
 
-  public boolean isEmailVerified(String writerId) {
-    User user = userRepository.findByLoginId(writerId)
-        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-    return user.getVerifiedStatus();
-  }
 
-  /**
-   * ID로 해당 사용자 찾는 메서드
-   *
-   * @param writerId
-   * @return
-   */
-  public User findUser(String writerId) {
-    User user = userRepository.findByLoginId(writerId)
-        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
-    return user;
-  }
 
   @Override
   public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {

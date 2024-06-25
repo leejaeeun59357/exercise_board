@@ -9,21 +9,20 @@ import org.board.exercise_board.comment.domain.model.Comment;
 import org.board.exercise_board.comment.domain.repository.CommentRepository;
 import org.board.exercise_board.exception.CustomException;
 import org.board.exercise_board.exception.ErrorCode;
-import org.board.exercise_board.liked.service.FindByType;
 import org.board.exercise_board.post.domain.model.Post;
 import org.board.exercise_board.post.domain.repository.PostRepository;
 import org.board.exercise_board.user.domain.model.User;
-import org.board.exercise_board.user.service.UserService;
+import org.board.exercise_board.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService implements FindByType<Comment> {
+public class CommentService {
 
   private final CommentRepository commentRepository;
   private final PostRepository postRepository;
-  private final UserService userService;
+  private final UserRepository userRepository;
   private final NotificationService notificationService;
 
   @Transactional
@@ -31,7 +30,13 @@ public class CommentService implements FindByType<Comment> {
     notificationService.notifyComment(postId,writerId);
 
     Post post = this.findPost(postId);
-    User user = userService.findUser(writerId);
+    User user = userRepository.findByLoginId(writerId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+    // 이메일 인증이 완료되었는지 검사
+    if (!user.getVerifiedStatus()) {
+      throw new CustomException(ErrorCode.NOT_VERIFIED_EMAIL);
+    }
 
     Comment comment = Comment.formToEntity(commentForm);
 
@@ -88,9 +93,5 @@ public class CommentService implements FindByType<Comment> {
     }
   }
 
-  @Override
-  public Comment find(Long commentId) {
-    return commentRepository.findById(commentId)
-        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMENT));
-  }
+
 }
