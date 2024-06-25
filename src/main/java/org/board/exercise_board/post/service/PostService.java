@@ -8,7 +8,6 @@ import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.repository.CommentRepository;
 import org.board.exercise_board.exception.CustomException;
 import org.board.exercise_board.exception.ErrorCode;
-import org.board.exercise_board.liked.service.FindByType;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
@@ -16,7 +15,7 @@ import org.board.exercise_board.post.domain.form.WriteForm;
 import org.board.exercise_board.post.domain.model.Post;
 import org.board.exercise_board.post.domain.repository.PostRepository;
 import org.board.exercise_board.user.domain.model.User;
-import org.board.exercise_board.user.service.UserService;
+import org.board.exercise_board.user.domain.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,10 +24,10 @@ import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
-public class PostService implements FindByType<Post> {
+public class PostService {
 
   private final PostRepository postRepository;
-  private final UserService userService;
+  private final UserRepository userRepository;
   private final CommentRepository commentRepository;
 
 
@@ -41,8 +40,8 @@ public class PostService implements FindByType<Post> {
     if (writeForm.getContent() == null || writeForm.getContent().isEmpty()) {
       throw new CustomException(ErrorCode.CONTENT_IS_EMPTY);
     }
-
-    User user = userService.findUser(writerId);
+    User user = userRepository.findByLoginId(writerId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
     // 이메일 인증이 완료되었는지 검사
     if (!user.getVerifiedStatus()) {
@@ -56,7 +55,7 @@ public class PostService implements FindByType<Post> {
   }
 
 
-  @Override
+
   public Post find(Long postId) {
     return postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
