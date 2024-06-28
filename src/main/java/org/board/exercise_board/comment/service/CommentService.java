@@ -9,6 +9,7 @@ import org.board.exercise_board.comment.domain.model.Comment;
 import org.board.exercise_board.comment.domain.repository.CommentRepository;
 import org.board.exercise_board.exception.CustomException;
 import org.board.exercise_board.exception.ErrorCode;
+import org.board.exercise_board.notification.service.NotificationService;
 import org.board.exercise_board.post.domain.model.Post;
 import org.board.exercise_board.post.domain.repository.PostRepository;
 import org.board.exercise_board.user.domain.model.User;
