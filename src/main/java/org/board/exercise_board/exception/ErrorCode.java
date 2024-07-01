@@ -15,6 +15,9 @@ public enum ErrorCode {
   LOGIN_ID_IS_NULL(HttpStatus.BAD_REQUEST, "ID는 필수 입력 항목입니다."),
   PASSWORD_IS_NULL(HttpStatus.BAD_REQUEST, "비밀번호는 필수 입력 항목입니다."),
 
+  // 로그인 관련
+  NOT_MATCHED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+
   // 인증 관련
   NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "해당 사용자를 찾을 수 없습니다."),
   ALREADY_VERIFIED(HttpStatus.BAD_REQUEST, "이미 인증이 완료되었습니다."),
