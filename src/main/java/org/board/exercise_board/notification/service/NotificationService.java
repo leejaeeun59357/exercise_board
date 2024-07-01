@@ -80,14 +80,13 @@ public class NotificationService {
       }
     }
   }
-}
 
-
-class EventData {
-  public Map<String,String> eventData(String commentWriter) {
-    Map<String, String> eventData = new HashMap<>();
-    eventData.put("message","댓글이 달렸습니다.");
-    eventData.put("sender", commentWriter);
-    return eventData;
+  static class EventData {
+    public Map<String,String> eventData(String commentWriter) {
+      Map<String, String> eventData = new HashMap<>();
+      eventData.put("message","댓글이 달렸습니다.");
+      eventData.put("sender", commentWriter);
+      return eventData;
+    }
   }
 }
