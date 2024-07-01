@@ -26,8 +26,6 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
   private final EmailService emailService;
-//  private final NotificationService notificationService;
-
 
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -71,9 +69,6 @@ public class UserService implements UserDetailsService {
 
     JwtToken token = jwtTokenProvider.createToken(
             user.getLoginId(), user.getRole().toString());
-
-    // TODO - 로그인이 되자마자 SSE 연결하는 메서드 필요함
-//    notificationService.subscribe(signInForm.getLoginId());
 
     return token;
   }
