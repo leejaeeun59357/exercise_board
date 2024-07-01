@@ -12,10 +12,6 @@ import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.domain.repository.UserRepository;
 import org.board.exercise_board.exception.CustomException;
 import org.board.exercise_board.exception.ErrorCode;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +24,6 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
   private final UserRepository userRepository;
-  private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
   private final EmailService emailService;
 //  private final NotificationService notificationService;
@@ -58,18 +53,24 @@ public class UserService implements UserDetailsService {
   }
 
   public JwtToken signin(SignInForm signInForm) {
-    // 1. token 생성
-    UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(
-        signInForm.getLoginId(), signInForm.getPassword());
+    User user = userRepository.findByLoginId(signInForm.getLoginId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-    // 2. 해당 token을 이용하여 인증 절차 거친다.
-    Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(authenticationToken);
+    String inputPassword = signInForm.getPassword();
+    String encodedPassword = user.getPassword();
 
-    // 3. 인증 절차 통과하면 인증이 완료되었다는 뜻
-    // 따라서 token을 발행한다.
-    JwtToken token = jwtTokenProvider.createToken(authentication);
+    boolean isMatched = passwordEncoder.matches(inputPassword, encodedPassword);
+
+    if(!isMatched) {
+      throw new CustomException(ErrorCode.NOT_MATCHED_PASSWORD);
+    }
+
+    if(!user.getVerifiedStatus()) {
+      throw new CustomException(ErrorCode.NOT_VERIFIED_EMAIL);
+    }
+
+    JwtToken token = jwtTokenProvider.createToken(
+            user.getLoginId(), user.getRole().toString());
 
     // TODO - 로그인이 되자마자 SSE 연결하는 메서드 필요함
 //    notificationService.subscribe(signInForm.getLoginId());
@@ -98,7 +99,7 @@ public class UserService implements UserDetailsService {
 
 
   @Override
-  public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+  public User loadUserByUsername(String loginId) throws UsernameNotFoundException {
     log.info(" --- 회원 정보 찾기, {} --- ", loginId);
     return userRepository.findByLoginId(loginId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));

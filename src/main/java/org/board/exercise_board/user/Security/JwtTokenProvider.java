@@ -5,7 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -15,7 +14,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.board.exercise_board.exception.CustomException;
+import org.board.exercise_board.exception.ErrorCode;
 import org.board.exercise_board.user.domain.model.JwtToken;
+import org.board.exercise_board.user.domain.model.User;
+import org.board.exercise_board.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,51 +39,56 @@ public class JwtTokenProvider {
   // 유효시간 = 7일
   private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
   private final Key key;
+  private final UserRepository userRepository;
 
-  public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey
-  ) {
+  public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey,
+                          UserRepository userRepository) {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
+    this.userRepository = userRepository;
   }
 
 
-  public JwtToken createToken(Authentication authentication) {
+  public JwtToken createToken(String loginId, String role) {
 
-    // 권한 가져오기
-    String authorities = authentication.getAuthorities().stream()
-        .map(GrantedAuthority::getAuthority)
-        .collect(Collectors.joining(","));
 
-    long now = (new Date()).getTime();
+    var now = new Date();
 
     // AccessToken 생성
-    Date accessTokenExpiratedTime = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+    var accessTokenExpiredDate =
+            new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
 
     String accessToken = Jwts.builder()
-        .setSubject(authentication.getName())
-        .claim(AUTHORITIES_KEY, authorities)
-        .setExpiration(accessTokenExpiratedTime)
-        .signWith(key, SignatureAlgorithm.HS256)
-        .compact();
+            .setSubject(loginId)
+            .claim(AUTHORITIES_KEY, role)
+            .setIssuedAt(now)
+            .setExpiration(accessTokenExpiredDate)
+            .signWith(key)
+            .compact();
 
 
     // refreshToken 생성
+    var refreshTokenExpiredDate =
+            new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
+
     String refreshToken = Jwts.builder()
-        .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-        .signWith(key, SignatureAlgorithm.HS256)
-        .compact();
+            .setSubject(loginId)
+            .claim(AUTHORITIES_KEY, role)
+            .setIssuedAt(now)
+            .setExpiration(refreshTokenExpiredDate)
+            .signWith(key)
+            .compact();
 
     return JwtToken.builder()
-        .grantType(BEARER_TYPE)
-        .accessToken(accessToken)
-        .refreshToken(refreshToken)
-        .build();
+            .grantType(BEARER_TYPE)
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
   }
 
 
   // Jwt 토큰을 복호화하여 토큰에 들어있는 인증 정보를 꺼내는 메서드
   public Authentication getAuthentication(String accessToken) {
-    // Jwt 토큰 복호화
     Claims claims = parseClaims(accessToken);
 
     if (claims.get(AUTHORITIES_KEY) == null) {
@@ -93,7 +101,10 @@ public class JwtTokenProvider {
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
-    return new UsernamePasswordAuthenticationToken(accessToken, authorities);
+    User user = userRepository.findByLoginId(claims.getSubject())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+    return new UsernamePasswordAuthenticationToken(user, accessToken, authorities);
   }
 
 
