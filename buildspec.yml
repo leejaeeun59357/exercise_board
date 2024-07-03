@@ -15,4 +15,6 @@ phases:
 artifacts:
   files:
     - build/libs/exercise_board-0.0.1-SNAPSHOT.war
+    - appspec.yml
+    - startup.sh
   discard-paths: yes
