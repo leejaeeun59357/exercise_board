@@ -14,5 +14,5 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
-    - build/libs/exercise_board-*.war
+    - build/libs/exercise_board-0.0.1-SNAPSHOT.war
   discard-paths: yes
