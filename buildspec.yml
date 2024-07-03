@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-version:
+      java: corretto17
+  build:
+    commands:
+      - echo Build start on `date`
+      - chmod u+x gradlew
+      - ./gradlew clean build
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - build/libs/exercise_board-*.war
+  discard-paths: yes
