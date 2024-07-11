@@ -3,6 +3,7 @@ package org.board.exercise_board.comment.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.application.ModifyApplication;
 import org.board.exercise_board.application.WriteApplication;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
@@ -25,6 +26,7 @@ public class CommentController {
 
   private final CommentService commentService;
   private final WriteApplication writeApplication;
+  private final ModifyApplication modifyApplication;
 
   @Operation(summary = "댓글 작성")
   @PostMapping("/{postId}/write")
@@ -47,7 +49,7 @@ public class CommentController {
       @RequestBody @Valid CommentForm commentForm
   ) {
     return ResponseEntity.ok(
-        commentService.modifyComment(commentForm, user.getUsername(), postId,
+        modifyApplication.modifyComment(commentForm, user.getUsername(), postId,
             commentId)
     );
   }

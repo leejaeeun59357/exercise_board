@@ -54,14 +54,8 @@ public class CommentService {
   }
 
   public CommentDto modifyComment(
-          CommentForm commentForm, String loginId, Long postId, Long commentId
+          CommentForm commentForm, Comment comment
   ) {
-    Post post = this.findPost(postId);
-    Comment comment = this.findCommentInPost(post, commentId);
-
-    if(!Objects.equals(comment.getUser().getLoginId(), loginId)) {
-      throw new CustomException(ErrorCode.WRITER_ONLY);
-    }
 
     comment.editContent(commentForm.getContent());
 

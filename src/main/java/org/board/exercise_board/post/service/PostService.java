@@ -86,27 +86,9 @@ public class PostService {
   }
 
 
-  public PostDto modifyPost(Long postId,ModifyForm modifyForm, String writerId) {
-    // 변경 후 제목 null 일 때,
-    if (ObjectUtils.isEmpty(modifyForm.getAfterSubject())) {
-      throw new CustomException(ErrorCode.SUBJECT_IS_EMPTY);
-    }
-
-    // 내용 null 일 때,
-    if (ObjectUtils.isEmpty(modifyForm.getContent())) {
-      throw new CustomException(ErrorCode.CONTENT_IS_EMPTY);
-    }
-
-    // 해당 제목의 게시물 찾기
-    Post post = this.findPost(postId);
-
-    // 수정하려는 사람과 작성자가 동일 인물인지 확인
-    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
-      throw new CustomException(ErrorCode.NOT_HAVE_RIGHT);
-    }
+  public PostDto modifyPost(ModifyForm modifyForm, Post post) {
 
     post.editSubjectAndContent(modifyForm.getAfterSubject(), modifyForm.getContent());
-
     return PostDto.entityToDto(postRepository.save(post));
   }
 
