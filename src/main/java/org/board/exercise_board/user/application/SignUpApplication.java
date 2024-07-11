@@ -32,4 +32,22 @@ public class SignUpApplication {
 
         return userDto;
     }
+
+    public void verifyEmail(String tokenId) {
+
+        EmailToken emailToken = emailService.findToken(tokenId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        // 이미 인증완료되었다면 Exception 발생
+        if(emailToken.getUser().getVerifiedStatus()) {
+            throw new CustomException(ErrorCode.ALREADY_VERIFIED);
+        }
+
+        // 만료 시간이 지났다면 Exception 발생
+        if(emailService.verifyExpirationDateTime(emailToken)) {
+            emailService.updateVerifyStatus(emailToken);
+        } else {
+            throw new CustomException(ErrorCode.EXPIRATION_TIME_IS_OVER);
+        }
+    }
 }
