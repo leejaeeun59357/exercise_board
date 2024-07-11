@@ -57,13 +57,7 @@ public class PostService {
         .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
   }
 
-  public String deletePost(String writerId, Long postId) {
-    Post post = this.findPost(postId);
-
-    // 로그인한 사용자가 작성자인지 확인
-    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
-      throw new CustomException(ErrorCode.NOT_HAVE_RIGHT);
-    }
+  public String deletePost(Post post) {
 
     postRepository.delete(post);
 

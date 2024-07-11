@@ -3,6 +3,7 @@ package org.board.exercise_board.post.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.application.DeleteApplication;
 import org.board.exercise_board.application.ModifyApplication;
 import org.board.exercise_board.application.WriteApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
@@ -36,6 +37,7 @@ public class PostController {
   private final PostService postService;
   private final WriteApplication writeApplication;
   private final ModifyApplication modifyApplication;
+  private final DeleteApplication deleteApplication;
 
   @Operation(summary = "게시글 작성")
   @PostMapping("/write")
@@ -54,7 +56,7 @@ public class PostController {
       @AuthenticationPrincipal User user,
       @RequestParam Long postId
   ) {
-    return postService.deletePost(user.getUsername(), postId);
+    return deleteApplication.deletePost(user.getUsername(), postId);
   }
 
   @Operation(summary = "게시글 10개씩 조회")
