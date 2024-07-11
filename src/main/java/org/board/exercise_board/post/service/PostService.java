@@ -32,14 +32,7 @@ public class PostService {
 
 
   public PostDto writePost(WriteForm writeForm, String writerId) {
-    // 제목이나 내용이 null값인지 검사
-    if (writeForm.getSubject() == null || writeForm.getSubject().isEmpty()) {
-      throw new CustomException(ErrorCode.SUBJECT_IS_EMPTY);
-    }
 
-    if (writeForm.getContent() == null || writeForm.getContent().isEmpty()) {
-      throw new CustomException(ErrorCode.CONTENT_IS_EMPTY);
-    }
     User user = userRepository.findByLoginId(writerId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
@@ -59,13 +52,13 @@ public class PostService {
 
 
 
-  public Post find(Long postId) {
+  public Post findPost(Long postId) {
     return postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
   }
 
   public String deletePost(String writerId, Long postId) {
-    Post post = this.find(postId);
+    Post post = this.findPost(postId);
 
     // 로그인한 사용자가 작성자인지 확인
     if(!Objects.equals(writerId, post.getUser().getLoginId())) {
@@ -83,7 +76,7 @@ public class PostService {
   }
 
   public PostOneDto readOnePost(Long postId) {
-    Post post = this.find(postId);
+    Post post = this.findPost(postId);
 
     List<CommentDto> comments = commentRepository.findAllByPost(post)
             .stream().map(CommentDto::entityToDto)
@@ -105,7 +98,7 @@ public class PostService {
     }
 
     // 해당 제목의 게시물 찾기
-    Post post = this.find(postId);
+    Post post = this.findPost(postId);
 
     // 수정하려는 사람과 작성자가 동일 인물인지 확인
     if(!Objects.equals(writerId, post.getUser().getLoginId())) {

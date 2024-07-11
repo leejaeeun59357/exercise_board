@@ -3,6 +3,7 @@ package org.board.exercise_board.comment.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.application.WriteApplication;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
 import org.board.exercise_board.comment.service.CommentService;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
   private final CommentService commentService;
+  private final WriteApplication writeApplication;
 
   @Operation(summary = "댓글 작성")
   @PostMapping("/{postId}/write")
@@ -32,7 +34,7 @@ public class CommentController {
       @RequestBody @Valid CommentForm commentForm
   ) {
     return ResponseEntity.ok(
-        commentService.saveComment(commentForm, postId,
+        writeApplication.writeComment(commentForm, postId,
             user.getUsername()));
   }
 

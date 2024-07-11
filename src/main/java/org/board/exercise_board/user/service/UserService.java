@@ -70,6 +70,11 @@ public class UserService implements UserDetailsService {
     return userRepository.existsByLoginId(loginId);
   }
 
+  public User findUser(String loginId) {
+    return userRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+  }
+
 
   @Override
   public User loadUserByUsername(String loginId) throws UsernameNotFoundException {

@@ -24,20 +24,8 @@ public class CommentService {
   private final CommentRepository commentRepository;
   private final PostRepository postRepository;
   private final UserRepository userRepository;
-  private final NotificationService notificationService;
 
-  @Transactional
-  public CommentDto saveComment(CommentForm commentForm, Long postId, String writerId) {
-    notificationService.notifyComment(postId,writerId);
-
-    Post post = this.findPost(postId);
-    User user = userRepository.findByLoginId(writerId)
-            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
-    // 이메일 인증이 완료되었는지 검사
-    if (!user.getVerifiedStatus()) {
-      throw new CustomException(ErrorCode.NOT_VERIFIED_EMAIL);
-    }
+  public CommentDto writeComment(CommentForm commentForm, Post post, User user) {
 
     Comment comment = Comment.builder()
             .content(commentForm.getContent())

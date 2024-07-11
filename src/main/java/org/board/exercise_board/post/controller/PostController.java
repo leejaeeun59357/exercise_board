@@ -3,6 +3,7 @@ package org.board.exercise_board.post.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.application.WriteApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
   private final PostService postService;
+  private final WriteApplication writeApplication;
 
   @Operation(summary = "게시글 작성")
   @PostMapping("/write")
@@ -40,7 +42,7 @@ public class PostController {
       @RequestBody WriteForm writeForm) {
 
     return ResponseEntity.ok(
-        postService.writePost(writeForm, user.getUsername()));
+        writeApplication.writePost(writeForm, user.getUsername()));
   }
 
 
