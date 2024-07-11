@@ -20,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +64,7 @@ public class PostService {
   }
 
 
-  public Page<Post> readAllPosts(Pageable pageable) {
+  public Page<Post> readPosts(Pageable pageable) {
     return postRepository.findAll(pageable);
   }
 

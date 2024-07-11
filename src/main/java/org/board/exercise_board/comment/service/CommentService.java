@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
 
     public CommentDto writeComment(CommentForm commentForm, Post post, User user) {
 

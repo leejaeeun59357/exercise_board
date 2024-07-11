@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.application.DeleteApplication;
 import org.board.exercise_board.application.ModifyApplication;
+import org.board.exercise_board.application.ReadApplication;
 import org.board.exercise_board.application.WriteApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
@@ -38,6 +39,7 @@ public class PostController {
   private final WriteApplication writeApplication;
   private final ModifyApplication modifyApplication;
   private final DeleteApplication deleteApplication;
+  private final ReadApplication readApplication;
 
   @Operation(summary = "게시글 작성")
   @PostMapping("/write")
@@ -61,10 +63,10 @@ public class PostController {
 
   @Operation(summary = "게시글 10개씩 조회")
   @GetMapping("/read")
-  public ResponseEntity<Page<Post>> readAllPost(
+  public ResponseEntity<List<PostDto>> readPosts(
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
-    return ResponseEntity.ok(postService.readAllPosts(pageable));
+    return ResponseEntity.ok(readApplication.readPosts(pageable));
   }
 
   @Operation(summary = "게시글 1개 조회")
@@ -72,7 +74,7 @@ public class PostController {
   public ResponseEntity<PostOneDto> readOnePost(
       @PathVariable(value = "postId") Long postId
   ) {
-    return ResponseEntity.ok(postService.readOnePost(postId));
+    return ResponseEntity.ok(readApplication.readOnePost(postId));
   }
 
   @Operation(summary = "게시글 수정")
