@@ -3,11 +3,13 @@ package org.board.exercise_board.user.service;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.board.exercise_board.user.domain.Dto.UserDto;
 import org.board.exercise_board.user.domain.model.EmailToken;
 import org.board.exercise_board.user.domain.model.User;
 import org.board.exercise_board.user.domain.repository.EmailTokenRepository;
 import org.board.exercise_board.exception.CustomException;
 import org.board.exercise_board.exception.ErrorCode;
+import org.board.exercise_board.user.domain.repository.UserRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class EmailService {
 
   private final JavaMailSender javaMailSender;
   private final EmailTokenRepository emailTokenRepository;
+  private final UserRepository userRepository;
 
   // 만료 시간은 5분으로 설정
   private final long EMAIL_TOKNE_EXPIRATION_MINUTE_TIME_VALUE = 5L;
@@ -50,7 +53,10 @@ public class EmailService {
     }
   }
 
-  public EmailToken createEmailToken(User user) {
+  public EmailToken createEmailToken(UserDto userDto) {
+
+    User user = userRepository.findByLoginId(userDto.getLoginId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
     EmailToken emailToken = null;
     if (emailTokenRepository.existsByUser(user)) {

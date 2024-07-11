@@ -25,27 +25,16 @@ public class UserService implements UserDetailsService {
 
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
-  private final EmailService emailService;
 
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
   public UserDto signUp(SignUpForm signUpForm) {
 
-    if(userRepository.existsByLoginId(signUpForm.getLoginId())) {
-      throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
-    }
-    if(this.userRepository.existsByEmail(signUpForm.getEmail())) {
-      throw new CustomException(ErrorCode.ALREADY_REGISTERD_EMAIL);
-    }
-
     String encodePassword = passwordEncoder.encode(signUpForm.getPassword());
     User user = User.formToEntity(signUpForm, encodePassword);
 
     userRepository.save(user);
-
-    EmailToken emailToken = emailService.createEmailToken(user);
-    emailService.sendEmail(signUpForm.getEmail(), emailToken);
 
     return UserDto.entityToDto(user);
   }
@@ -73,24 +62,18 @@ public class UserService implements UserDetailsService {
     return token;
   }
 
-  public void verifyEmail(String tokenId) {
 
-    EmailToken emailToken = emailService.findToken(tokenId)
-            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
-    // 이미 인증완료되었다면 Exception 발생
-    if(emailToken.getUser().getVerifiedStatus()) {
-      throw new CustomException(ErrorCode.ALREADY_VERIFIED);
-    }
-
-    // 만료 시간이 지났다면 Exception 발생
-    if(emailService.verifyExpirationDateTime(emailToken)) {
-      emailService.updateVerifyStatus(emailToken);
-    } else {
-      throw new CustomException(ErrorCode.EXPIRATION_TIME_IS_OVER);
-    }
+  public boolean isExistEmail(String email) {
+    return userRepository.existsByEmail(email);
+  }
+  public boolean isExistLoginId(String loginId) {
+    return userRepository.existsByLoginId(loginId);
   }
 
+  public User findUser(String loginId) {
+    return userRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+  }
 
 
   @Override

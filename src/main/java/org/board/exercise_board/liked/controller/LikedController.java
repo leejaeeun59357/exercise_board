@@ -2,8 +2,8 @@ package org.board.exercise_board.liked.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.application.LikeApplication;
 import org.board.exercise_board.liked.domain.model.Type;
-import org.board.exercise_board.liked.service.LikedService;
 import org.board.exercise_board.user.domain.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/like")
 public class LikedController {
 
-  private final LikedService likedService;
+  private final LikeApplication likeApplication;
 
   @Operation(summary = "게시글 좋아요")
   @PostMapping("/post")
@@ -25,7 +25,7 @@ public class LikedController {
       @AuthenticationPrincipal User user,
       @RequestParam Long postId
   ) {
-    return ResponseEntity.ok(likedService.saveLiked(Type.POST,postId,
+    return ResponseEntity.ok(likeApplication.saveLiked(Type.POST,postId,
         user.getUsername()));
   }
 
@@ -35,7 +35,7 @@ public class LikedController {
       @AuthenticationPrincipal User user,
       @RequestParam Long commentId
   ) {
-    return ResponseEntity.ok(likedService.saveLiked(Type.COMMENT,commentId,
+    return ResponseEntity.ok(likeApplication.saveLiked(Type.COMMENT,commentId,
         user.getUsername()));
   }
 }

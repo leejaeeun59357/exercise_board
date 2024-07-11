@@ -3,14 +3,15 @@ package org.board.exercise_board.post.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.application.DeleteApplication;
+import org.board.exercise_board.application.ModifyApplication;
+import org.board.exercise_board.application.ReadApplication;
+import org.board.exercise_board.application.WriteApplication;
 import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
 import org.board.exercise_board.post.domain.form.WriteForm;
-import org.board.exercise_board.post.domain.model.Post;
-import org.board.exercise_board.post.service.PostService;
 import org.board.exercise_board.user.domain.model.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -31,7 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/post")
 public class PostController {
 
-  private final PostService postService;
+  private final WriteApplication writeApplication;
+  private final ModifyApplication modifyApplication;
+  private final DeleteApplication deleteApplication;
+  private final ReadApplication readApplication;
 
   @Operation(summary = "게시글 작성")
   @PostMapping("/write")
@@ -40,7 +44,7 @@ public class PostController {
       @RequestBody WriteForm writeForm) {
 
     return ResponseEntity.ok(
-        postService.writePost(writeForm, user.getUsername()));
+        writeApplication.writePost(writeForm, user.getUsername()));
   }
 
 
@@ -50,15 +54,15 @@ public class PostController {
       @AuthenticationPrincipal User user,
       @RequestParam Long postId
   ) {
-    return postService.deletePost(user.getUsername(), postId);
+    return deleteApplication.deletePost(user.getUsername(), postId);
   }
 
   @Operation(summary = "게시글 10개씩 조회")
   @GetMapping("/read")
-  public ResponseEntity<Page<Post>> readAllPost(
+  public ResponseEntity<List<PostDto>> readPosts(
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
-    return ResponseEntity.ok(postService.readAllPosts(pageable));
+    return ResponseEntity.ok(readApplication.readPosts(pageable));
   }
 
   @Operation(summary = "게시글 1개 조회")
@@ -66,7 +70,7 @@ public class PostController {
   public ResponseEntity<PostOneDto> readOnePost(
       @PathVariable(value = "postId") Long postId
   ) {
-    return ResponseEntity.ok(postService.readOnePost(postId));
+    return ResponseEntity.ok(readApplication.readOnePost(postId));
   }
 
   @Operation(summary = "게시글 수정")
@@ -77,7 +81,7 @@ public class PostController {
       @RequestBody ModifyForm modifyForm
   ) {
     return ResponseEntity.ok(
-        postService.modifyPost(postId,modifyForm, user.getUsername()));
+            modifyApplication.modifyPost(postId,modifyForm, user.getUsername()));
   }
 
 
@@ -87,6 +91,6 @@ public class PostController {
       @RequestParam String keyword,
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
-    return ResponseEntity.ok(postService.searchPost(keyword, pageable));
+    return ResponseEntity.ok(readApplication.searchPost(keyword, pageable));
   }
 }

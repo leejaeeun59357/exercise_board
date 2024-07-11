@@ -20,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -32,14 +31,7 @@ public class PostService {
 
 
   public PostDto writePost(WriteForm writeForm, String writerId) {
-    // 제목이나 내용이 null값인지 검사
-    if (writeForm.getSubject() == null || writeForm.getSubject().isEmpty()) {
-      throw new CustomException(ErrorCode.SUBJECT_IS_EMPTY);
-    }
 
-    if (writeForm.getContent() == null || writeForm.getContent().isEmpty()) {
-      throw new CustomException(ErrorCode.CONTENT_IS_EMPTY);
-    }
     User user = userRepository.findByLoginId(writerId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
@@ -59,18 +51,12 @@ public class PostService {
 
 
 
-  public Post find(Long postId) {
+  public Post findPost(Long postId) {
     return postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
   }
 
-  public String deletePost(String writerId, Long postId) {
-    Post post = this.find(postId);
-
-    // 로그인한 사용자가 작성자인지 확인
-    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
-      throw new CustomException(ErrorCode.NOT_HAVE_RIGHT);
-    }
+  public String deletePost(Post post) {
 
     postRepository.delete(post);
 
@@ -78,12 +64,12 @@ public class PostService {
   }
 
 
-  public Page<Post> readAllPosts(Pageable pageable) {
+  public Page<Post> readPosts(Pageable pageable) {
     return postRepository.findAll(pageable);
   }
 
   public PostOneDto readOnePost(Long postId) {
-    Post post = this.find(postId);
+    Post post = this.findPost(postId);
 
     List<CommentDto> comments = commentRepository.findAllByPost(post)
             .stream().map(CommentDto::entityToDto)
@@ -93,42 +79,15 @@ public class PostService {
   }
 
 
-  public PostDto modifyPost(Long postId,ModifyForm modifyForm, String writerId) {
-    // 변경 후 제목 null 일 때,
-    if (ObjectUtils.isEmpty(modifyForm.getAfterSubject())) {
-      throw new CustomException(ErrorCode.SUBJECT_IS_EMPTY);
-    }
-
-    // 내용 null 일 때,
-    if (ObjectUtils.isEmpty(modifyForm.getContent())) {
-      throw new CustomException(ErrorCode.CONTENT_IS_EMPTY);
-    }
-
-    // 해당 제목의 게시물 찾기
-    Post post = this.find(postId);
-
-    // 수정하려는 사람과 작성자가 동일 인물인지 확인
-    if(!Objects.equals(writerId, post.getUser().getLoginId())) {
-      throw new CustomException(ErrorCode.NOT_HAVE_RIGHT);
-    }
+  public PostDto modifyPost(ModifyForm modifyForm, Post post) {
 
     post.editSubjectAndContent(modifyForm.getAfterSubject(), modifyForm.getContent());
-
     return PostDto.entityToDto(postRepository.save(post));
   }
 
-  /**
-   * 해당 키워드를 포함하고 있는 게시글 조회
-   *
-   * @param keyword
-   * @return
-   */
+
   @Transactional
   public List<PostDto> searchPost(String keyword, Pageable pageable) {
-    // 검색 키워드가 null 일 때
-    if(Objects.equals(keyword, "") || keyword == null) {
-      throw new CustomException(ErrorCode.KEYWORD_IS_EMPTY);
-    }
 
     return postRepository.findBySubjectContaining(keyword,pageable)
         .stream().map(PostDto::entityToDto)
