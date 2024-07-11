@@ -1,8 +1,6 @@
 package org.board.exercise_board.comment.service;
 
 
-import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
 import org.board.exercise_board.comment.domain.dto.CommentDto;
 import org.board.exercise_board.comment.domain.form.CommentForm;
@@ -33,10 +31,6 @@ public class CommentService {
         return CommentDto.entityToDto(commentRepository.save(comment));
     }
 
-    public Post findPost(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_IS_NOT_EXIST));
-    }
 
 
     /**
