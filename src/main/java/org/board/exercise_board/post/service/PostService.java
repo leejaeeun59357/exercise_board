@@ -85,18 +85,9 @@ public class PostService {
     return PostDto.entityToDto(postRepository.save(post));
   }
 
-  /**
-   * 해당 키워드를 포함하고 있는 게시글 조회
-   *
-   * @param keyword
-   * @return
-   */
+
   @Transactional
   public List<PostDto> searchPost(String keyword, Pageable pageable) {
-    // 검색 키워드가 null 일 때
-    if(Objects.equals(keyword, "") || keyword == null) {
-      throw new CustomException(ErrorCode.KEYWORD_IS_EMPTY);
-    }
 
     return postRepository.findBySubjectContaining(keyword,pageable)
         .stream().map(PostDto::entityToDto)

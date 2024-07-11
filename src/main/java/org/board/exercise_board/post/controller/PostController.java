@@ -11,10 +11,7 @@ import org.board.exercise_board.post.domain.Dto.PostDto;
 import org.board.exercise_board.post.domain.Dto.PostOneDto;
 import org.board.exercise_board.post.domain.form.ModifyForm;
 import org.board.exercise_board.post.domain.form.WriteForm;
-import org.board.exercise_board.post.domain.model.Post;
-import org.board.exercise_board.post.service.PostService;
 import org.board.exercise_board.user.domain.model.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -35,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/post")
 public class PostController {
 
-  private final PostService postService;
   private final WriteApplication writeApplication;
   private final ModifyApplication modifyApplication;
   private final DeleteApplication deleteApplication;
@@ -95,6 +91,6 @@ public class PostController {
       @RequestParam String keyword,
       @PageableDefault(size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable
   ) {
-    return ResponseEntity.ok(postService.searchPost(keyword, pageable));
+    return ResponseEntity.ok(readApplication.searchPost(keyword, pageable));
   }
 }
