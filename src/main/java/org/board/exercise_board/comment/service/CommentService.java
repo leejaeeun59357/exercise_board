@@ -30,14 +30,11 @@ public class CommentService {
         return CommentDto.entityToDto(commentRepository.save(comment));
     }
 
+    public Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMENT));
+    }
 
-
-    /**
-     * 해당 게시물 내에 댓글이 존재하는지 확인
-     *
-     * @param post
-     * @return
-     */
     public Comment findCommentInPost(Post post, Long commentId) {
         return commentRepository.findByIdAndPost(commentId, post)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_COMMENT));
