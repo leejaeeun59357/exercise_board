@@ -32,20 +32,10 @@ public class UserService implements UserDetailsService {
 
   public UserDto signUp(SignUpForm signUpForm) {
 
-    if(userRepository.existsByLoginId(signUpForm.getLoginId())) {
-      throw new CustomException(ErrorCode.ALREADY_REGISTERD_ID);
-    }
-    if(this.userRepository.existsByEmail(signUpForm.getEmail())) {
-      throw new CustomException(ErrorCode.ALREADY_REGISTERD_EMAIL);
-    }
-
     String encodePassword = passwordEncoder.encode(signUpForm.getPassword());
     User user = User.formToEntity(signUpForm, encodePassword);
 
     userRepository.save(user);
-
-    EmailToken emailToken = emailService.createEmailToken(user);
-    emailService.sendEmail(signUpForm.getEmail(), emailToken);
 
     return UserDto.entityToDto(user);
   }
@@ -91,6 +81,12 @@ public class UserService implements UserDetailsService {
     }
   }
 
+  public boolean isExistEmail(String email) {
+    return userRepository.existsByEmail(email);
+  }
+  public boolean isExistLoginId(String loginId) {
+    return userRepository.existsByLoginId(loginId);
+  }
 
 
   @Override

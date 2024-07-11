@@ -3,6 +3,7 @@ package org.board.exercise_board.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.board.exercise_board.user.application.SignUpApplication;
 import org.board.exercise_board.user.domain.Dto.UserDto;
 import org.board.exercise_board.user.domain.Form.SignInForm;
 import org.board.exercise_board.user.domain.Form.SignUpForm;
@@ -22,11 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService userService;
+  private final SignUpApplication signUpApplication;
 
   @Operation(summary = "회원가입")
   @PostMapping("/signup")
   public ResponseEntity<UserDto> signup(@Valid @RequestBody SignUpForm signUpForm) {
-    return ResponseEntity.ok(userService.signUp(signUpForm));
+    return ResponseEntity.ok(signUpApplication.signUp(signUpForm));
   }
 
 
