@@ -82,20 +82,52 @@
 ![image](https://github.com/leejaeeun59357/exercise_board/assets/149572895/3703b401-7995-43e9-85f1-341d627310f6)
 
 
-
-## 추가 기능 구현 예정 (우선순위가 낮은 것)
-- [ ] entity 클래스에 setter 삭제 필요
-- [ ] SSE 연결이 되어 있지 않은 상태에서 event가 발생하였을 때 사용자가 추후에 이벤트에 대해 볼 수 있도록 알람 내용을 저장
-- [ ] 회원 비밀번호 변경
-- [ ] 카카오 소셜 로그인 기능 구현
-- [ ] Elastic Search를 사용한 게시글 제목 검색 기능 구현
-
-## 수정필요한 부분
-- [x] package 명 소문자로 변경
-- [x] ~~searchPost 메서드 반환값 list -> Page 로 변경~~
-    - Page로 반환받은 결과값을 dto로 변환하는 과정에서 List로 변경되기 때문에 반환값에는 변화가 없으므로 변경X
-- [ ] synchronized는 성능저하 발생 -> Redis를 이용하여 lock할 수 있도록 수정
-- [x] findServiceByType(LikedService.java) 에서 find -> exist로 변경
-
 ## 😂Trouble Shooting😂
+### 🚨 @AuthenticationPrincipal 어노테이션 사용 시 객체에 null 값이 NullPointerException 에러 발생
 
+**[해결 과정]**
+
+![image](https://github.com/user-attachments/assets/64d14e66-0d17-455c-8fa8-1f48324f9f16)
+디버깅 과정에서 정상적으로 생성된 Authentication 이 SecurityContext 에 저장되는 것을 파악함.
+
+그렇다면 생성된 Authentication 객체에 문제가 있음을 파악함.
+
+![image](https://github.com/user-attachments/assets/c22aa435-6270-4ff3-aed2-c220eb5335ae)
+
+Authentication 을 생성하는 UsernamePasswordAuthenticationToken 의 생성자를 살펴보았을 때 
+![image](https://github.com/user-attachments/assets/4b808f8e-3eb7-405f-9456-2365557c3a32)
+
+Principal 객체를 잘못 넣어서 Authentication 객체를 만들고 있었다.
+
+User 객체를 넣어서 생성하는 것이 아닌 String 형식의 이름만 넣어서 문제가 발생한 것이다.
+
+따라서 accessToken에 포함된 User 정보를 Authentication 객체에 넣어 생성하였더니 정상적으로 작동했다.
+
+
+### 🚨 로그인 후 생성된 Token 사용 시 사용할 수 없는 문제 발생
+- 로그인 과정을 거친 후 JWT이 생성되었고 해당 Token을 사용 시 filter에서 걸러지는 문제가 발생했다.
+
+디버깅 과정을 통해 
+`SecurityContextHolder.getContext().setAuthentication(authentication);` 
+에서 Authentication 객체가 `Authentication = false`로 되어 있고 `Granted Authorities = null` 이 들어가 있었다.
+
+**[문제코드]**
+
+`return new UsernamePasswordAuthenticationToken(accessToken, authorities);` 에서 Authentication을 잘못 생성한 것이였다.
+
+**[해결 과정]**
+
+UsernamePasswordAuthenticationToken 생성자를 살펴보았다.
+
+``public UsernamePasswordAuthenticationToken(
+    java.lang.Object principal, 
+    java.lang.Object credentials, 
+    java.util.Collection<? extends org.springframework.security.core.GrantedAuthority> authorities
+    ) { /* compiled code */ }
+``
+
+해당 생성자에서 권한을 설정할 때 3가지의 값을 넣어서 생성해야하는 것을 파악했다.
+
+**[변경 후 코드]**
+
+`return new UsernamePasswordAuthenticationToken(accessToken, "", authorities);`로 변경하였다.
